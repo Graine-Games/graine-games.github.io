@@ -1,3 +1,3 @@
-# HARENA — site vitrine
-Site statique de HARENA (Graine Games) pour GitHub Pages : `index.html` la vitrine, `confidentialite.html` la politique de confidentialité exigée par Google Play, textes FR/EN/ES dans `langue.js`.
-Captures à déposer dans `img/captures/` (titre, etendard, campagne, gladiateur, equipe, combat .png) ; `node verifie.mjs` contrôle traductions et chemins avant tout envoi.
+# Graine Games — site du studio
+Servi par GitHub Pages à https://graine-games.github.io/. Un dossier par jeu, pour que ses adresses ne bougent jamais : `harena/` (vitrine, `confidentialite.html` exigée par Google Play, textes FR/EN/ES dans `langue.js`).
+Les captures de `harena/img/captures/` sont produites depuis `harena/docs/store/captures/` du dépôt du jeu ; `node harena/verifie.mjs` contrôle traductions et chemins avant tout envoi.

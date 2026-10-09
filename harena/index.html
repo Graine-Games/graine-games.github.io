@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-i18n="titre">HARENA — Forge ta gloire</title>
+<meta name="description" content="HARENA, jeu de cartes de gladiateurs pour Android : fonde ta maison, recrute tes gladiateurs et forge ta gloire dans le sable du colisée. Sans publicité, hors ligne, en français, anglais et espagnol.">
+<meta name="theme-color" content="#14100F">
+<meta property="og:type" content="website">
+<meta property="og:title" content="HARENA — Forge ta gloire">
+<meta property="og:description" content="Fonde ta maison, recrute tes gladiateurs et forge ta gloire dans le sable du colisée.">
+<meta property="og:image" content="img/harena-512.png">
+<meta property="og:site_name" content="Graine Games">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="preload" href="fonts/Cinzel.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="lien-evitement" href="#jeu" data-i18n="evitement">Aller au contenu</a>
+
+<header class="entete">
+  <nav class="langues" aria-label="Langue">
+    <button type="button" data-lang="fr" lang="fr" aria-pressed="true">FR</button>
+    <button type="button" data-lang="en" lang="en" aria-pressed="false">EN</button>
+    <button type="button" data-lang="es" lang="es" aria-pressed="false">ES</button>
+  </nav>
+  <img class="icone" src="img/harena-256.png" width="88" height="88" alt="">
+  <h1><span class="or-grave">HARENA</span></h1>
+  <p class="sous-titre" data-i18n="sousTitre">Forge ta gloire</p>
+  <div class="filet-orne" aria-hidden="true"><span></span></div>
+  <p class="accroche" data-i18n="accroche">Fonde ta maison, recrute tes gladiateurs et forge ta gloire dans le sable du colisée.</p>
+  <a class="bouton" href="#testeur" data-i18n="cta">Devenir testeur</a>
+  <p class="mention" data-i18n="mention">Sur Android · en test</p>
+</header>
+
+<main id="jeu">
+  <p class="epigraphe" data-i18n="epigraphe">La foule gronde. Ton étendard flotte au-dessus du sable. Ta maison de gladiateurs entre dans l'arène.</p>
+
+  <section class="section" aria-labelledby="titre-jeu">
+    <h2 id="titre-jeu" data-i18n="jeuTitre">Ce qui t'attend</h2>
+    <div class="filet-orne" aria-hidden="true"><span></span></div>
+    <ul class="atouts">
+      <li>
+        <h3 data-i18n="maisonTitre">Fonde ta maison</h3>
+        <p data-i18n="maisonTexte">Choisis ton nom, ta province et compose ton étendard : partitions, couleurs, emblème. Il flotte partout où tes gladiateurs combattent.</p>
+      </li>
+      <li>
+        <h3 data-i18n="routeTitre">De l'Afrique à Rome</h3>
+        <p data-i18n="routeTexte">Vingt-quatre provinces autour de la Méditerranée, de la Maurétanie jusqu'à Rome. Chaque colisée a ses combats, ses maisons rivales et son champion. Gagne des lauriers, bats le champion, ouvre la route.</p>
+      </li>
+      <li>
+        <h3 data-i18n="gladiateursTitre">Soixante-sept gladiateurs</h3>
+        <p data-i18n="gladiateursTexte">Recrute-les, fais-les monter en niveau et choisis les capacités qu'ils emportent au combat. Chacun a son visage, son peuple et son histoire.</p>
+      </li>
+      <li>
+        <h3 data-i18n="cercleTitre">Quatre familles, un cercle</h3>
+        <p data-i18n="cercleTexte">Bouclier, Lame, Lancier, Poursuite : chaque famille en domine une autre. Lis l'équipe adverse, compose la tienne, et retourne le combat.</p>
+      </li>
+      <li>
+        <h3 data-i18n="combatTitre">Le combat, tour par tour</h3>
+        <p data-i18n="combatTexte">Choisis chaque action, gère l'endurance, place le bon gladiateur face au bon adversaire. Une erreur se paie, une bonne lecture se voit.</p>
+      </li>
+      <li>
+        <h3 data-i18n="libreTitre">Sans publicité, hors ligne</h3>
+        <p data-i18n="libreTexte">Aucune publicité, aucune donnée collectée. Le jeu se joue sans connexion, en français, anglais ou espagnol.</p>
+      </li>
+    </ul>
+  </section>
+
+  <section class="section galerie" aria-labelledby="titre-galerie">
+    <h2 id="titre-galerie" data-i18n="galerieTitre">Dans l'arène</h2>
+    <div class="filet-orne" aria-hidden="true"><span></span></div>
+    <!-- Les captures 720×1600 (JPEG, produites depuis harena/docs/store/captures) sont déposées dans img/captures/ ; une capture absente retire son cadre. -->
+    <ul class="piste">
+      <li><figure><div class="cadre"><img src="img/captures/titre.jpg" width="720" height="1600" loading="lazy" alt="Écran titre" data-i18n-alt="capTitre" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capTitre">Écran titre</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/etendard.jpg" width="720" height="1600" loading="lazy" alt="L'étendard" data-i18n-alt="capEtendard" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capEtendard">L'étendard</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/campagne.jpg" width="720" height="1600" loading="lazy" alt="La campagne" data-i18n-alt="capCampagne" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capCampagne">La campagne</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/gladiateur.jpg" width="720" height="1600" loading="lazy" alt="Un gladiateur" data-i18n-alt="capGladiateur" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capGladiateur">Un gladiateur</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/equipe.jpg" width="720" height="1600" loading="lazy" alt="L'équipe" data-i18n-alt="capEquipe" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capEquipe">L'équipe</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/combat.jpg" width="720" height="1600" loading="lazy" alt="Le combat" data-i18n-alt="capCombat" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capCombat">Le combat</figcaption></figure></li>
+    </ul>
+  </section>
+
+  <section class="section" id="testeur" aria-labelledby="titre-testeur">
+    <div class="testeur">
+      <h2 id="titre-testeur" data-i18n="testeurTitre">Devenir testeur</h2>
+      <div class="filet-orne" aria-hidden="true"><span></span></div>
+      <p data-i18n="testeurTexte1">HARENA est en test : ton avis façonne la suite.</p>
+      <p data-i18n="testeurTexte2">Pour rejoindre les testeurs, écris simplement au studio.</p>
+      <a class="bouton" href="mailto:contact.graine.games@gmail.com?subject=Devenir%20testeur%20HARENA" data-i18n="testeurBouton">Écrire au studio</a>
+      <p class="adresse">contact.graine.games@gmail.com</p>
+    </div>
+  </section>
+</main>
+
+<footer class="pied">
+  <img class="studio" src="img/graine-games.png" width="480" height="116" alt="Graine Games">
+  <p><a href="confidentialite.html" data-i18n="infos">Informations importantes</a></p>
+  <p>© 2026 Graine Games</p>
+</footer>
+
+<script src="langue.js"></script>
+</body>
+</html>
