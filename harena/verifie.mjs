@@ -17,7 +17,8 @@ for (const page of ['index.html', 'confidentialite.html']) {
   for (const [, p] of html.matchAll(/(?:src|href)="([^"#]+)"/g)) {
     if (/^(https?:|mailto:)/.test(p)) continue;
     if (p.startsWith('/')) erreurs.push(`${page} : chemin absolu ${p}`);
-    else if (!p.startsWith('img/captures/') && !existsSync(p)) erreurs.push(`${page} : ${p} introuvable`);
+    // ?v=… force les navigateurs a recharger la feuille et le script apres chaque envoi.
+    else if (!existsSync(p.split('?')[0])) erreurs.push(`${page} : ${p} introuvable`);
   }
 }
 if (erreurs.length) { console.error(erreurs.join('\n')); process.exit(1); }
