@@ -7,7 +7,7 @@
 }
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
   --fond: #14100F;
   --panneau: #1F1917;
   --panneau-haut: #241D1A;
@@ -26,6 +26,20 @@
   --titre: "Cinzel", "Trajan Pro", "Times New Roman", serif;
   --courant: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Noto Serif", "Droid Serif", serif;
   --marge: 16px;
+  /* La pierre (charte.dart, « La gravure dans la pierre ») */
+  --mur: #E2D6C1;
+  --marbre: #F4F2ED url("img/marbre.webp") 0 0 / 512px;
+  --pierre: #F4F2ED;
+  --sillon: #3B3B37;
+  --sillon-profond: #2A2A26;
+  --minium: #8E2A18;
+  --encre: #2E2D29;
+  --encre-douce: #5C584F;
+  --joint: rgba(40, 30, 20, .3);
+  --taille: 0 .5px 0 rgba(255, 255, 255, .62), 0 -.5px 0 rgba(60, 60, 56, .22);
+  --taille-forte: 0 1px 0 rgba(255, 255, 255, .72), 0 -1px 0 rgba(42, 42, 38, .3);
+  --taille-minium: 0 1px 0 rgba(255, 255, 255, .62), 0 -1px 0 rgba(70, 16, 6, .32);
+  --dalle-ombre: inset 0 1px 0 rgba(255, 255, 255, .9), inset 0 -1px 0 rgba(60, 50, 40, .1), 0 1px 1px rgba(40, 30, 20, .14), 0 16px 30px -18px rgba(50, 35, 20, .55);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -34,23 +48,25 @@ html { -webkit-text-size-adjust: 100%; }
 
 body {
   margin: 0;
-  background: var(--fond);
-  color: var(--texte);
+  /* le mur de travertin : la pierre chaude, le marbre ne transparaît qu'au quart, plus grand */
+  background: linear-gradient(rgba(226, 214, 193, .74), rgba(226, 214, 193, .74)), url("img/marbre.webp") 0 0 / 820px, var(--mur);
+  color: var(--encre);
   font: 1.0625rem/1.65 var(--courant);
   overflow-x: hidden;
 }
 
 img { max-width: 100%; display: block; }
 
-a { color: var(--or); text-underline-offset: .2em; text-decoration-thickness: 1px; }
-a:hover { color: #FFF1C2; }
-:focus-visible { outline: 2px solid var(--or); outline-offset: 3px; border-radius: 2px; }
+a { color: var(--minium); text-underline-offset: .2em; text-decoration-thickness: 1px; }
+a:hover { color: #B23A22; }
+:focus-visible { outline: 2px solid var(--minium); outline-offset: 3px; border-radius: 2px; }
+.entete :focus-visible { outline-color: var(--pierre); }
 
 h1, h2, h3 { font-family: var(--titre); font-weight: 700; line-height: 1.2; margin: 0; }
 
 .lien-evitement {
   position: absolute; left: var(--marge); top: -100px; z-index: 10;
-  background: var(--panneau); padding: 8px 12px; border: 1px solid var(--bronze);
+  background: var(--marbre); padding: 8px 12px; border: 1px solid var(--joint);
 }
 .lien-evitement:focus { top: var(--marge); }
 
@@ -66,7 +82,7 @@ h1, h2, h3 { font-family: var(--titre); font-weight: 700; line-height: 1.2; marg
   padding: 10px 8px; min-width: 44px; min-height: 44px;
 }
 .langues button:hover { color: var(--texte); }
-.langues button[aria-pressed="true"] { color: var(--or); text-decoration: underline 1px; text-underline-offset: 6px; }
+.langues button[aria-pressed="true"] { color: var(--pierre); text-decoration: underline 1px; text-underline-offset: 6px; }
 
 /* La barre du haut de l'accueil : la musique, puis les langues. */
 .haut {
@@ -80,7 +96,7 @@ h1, h2, h3 { font-family: var(--titre); font-weight: 700; line-height: 1.2; marg
   background: rgba(20, 16, 15, .6); backdrop-filter: blur(6px);
 }
 .son:hover { color: var(--texte); }
-.son[aria-pressed="true"] { color: var(--or); }
+.son[aria-pressed="true"] { color: var(--pierre); }
 .son svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .son .hp { fill: currentColor; }
 .son[aria-pressed="false"] .ondes, .son[aria-pressed="true"] .muet { display: none; }
@@ -132,8 +148,7 @@ h1, h2, h3 { font-family: var(--titre); font-weight: 700; line-height: 1.2; marg
   --s: .85;
   position: relative; isolation: isolate; overflow: hidden;
   height: 100vh; height: 100svh; min-height: 540px;
-  background: var(--fond);
-  margin-bottom: 48px;
+  background: var(--fond); color: var(--texte);
 }
 .arene, .arene > * { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; }
 .arene { overflow: hidden; pointer-events: none; }
@@ -153,7 +168,8 @@ h1, h2, h3 { font-family: var(--titre); font-weight: 700; line-height: 1.2; marg
   position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
   display: flex; flex-direction: column; align-items: center; text-align: center;
   padding: 72px var(--marge) 24px;
-  background: linear-gradient(180deg, rgba(20, 16, 15, 0), rgba(20, 16, 15, .66) 72px, rgba(20, 16, 15, .86) 70%, var(--fond));
+  /* le sable à l'ombre, brun et non noir : il se prolonge sous l'en-tête jusqu'au mur de pierre */
+  background: linear-gradient(180deg, rgba(38, 25, 15, 0), rgba(38, 25, 15, .66) 72px, rgba(38, 25, 15, .74) 70%, rgba(38, 25, 15, .6));
 }
 .appel .accroche {
   max-width: 30rem; margin: 0 0 22px;
@@ -172,128 +188,214 @@ h1, h2, h3 { font-family: var(--titre); font-weight: 700; line-height: 1.2; marg
   .appel, .haut { zoom: 1.3; }
 }
 
+/* ---------- Sous l'arène : la pierre de HARENA ----------
+   La matière des barres du jeu (lib/ui/theme/charte.dart, « La gravure dans la pierre ») : une dalle de marbre
+   de Luni, et tout ce qu'elle porte y est TAILLÉ. Le sillon n'est jamais noir, c'est la pierre dans son ombre ;
+   une lettre taillée a exactement deux ombres (le V : la joue du haut à l'ombre, celle du bas au jour, la lumière
+   venant d'en haut à gauche) ; le rouge n'est pas un filet mais un pigment, le minium qui remplit le creux de ce
+   qui compte. Les dalles sont posées sur un mur de travertin, en plein jour ; l'or ne sert plus qu'à HARENA. */
+
+/* Le seuil : le sable de l'arène, à l'ombre, s'éclaire jusqu'au mur. */
+main {
+  padding-top: 88px;
+  background: linear-gradient(180deg, #4F3822 0, rgba(79, 56, 34, .5) 110px, rgba(79, 56, 34, 0) 320px);
+}
+
+/* Une dalle : le marbre, son arête haute au jour, son joint, et l'ombre qu'elle porte sur le mur. */
+.epigraphe, .atouts li, .piste .cadre, .testeur, .pied, .barre, .texte {
+  background: var(--marbre);
+  border: 1px solid var(--joint);
+  box-shadow: var(--dalle-ombre);
+}
+
 /* ---------- Sections ---------- */
 .section { padding: 72px var(--marge); max-width: 1120px; margin: 0 auto; }
-.section > h2 {
-  text-align: center; font-size: clamp(1.625rem, 6vw, 2.25rem);
-  letter-spacing: .06em; color: var(--texte);
+.section > h2, .testeur h2 {
+  text-align: center; font-size: clamp(1.625rem, 6vw, 2.375rem);
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--sillon-profond); text-shadow: var(--taille-forte);
 }
 .section > .chapeau {
-  text-align: center; color: var(--sourdine); font-style: italic;
+  text-align: center; color: var(--encre-douce); font-style: italic;
   max-width: 34rem; margin: 0 auto 40px;
 }
+.minium { color: var(--minium); text-shadow: var(--taille-minium); }
 
+/* L'épigraphe : une inscription, sur un linteau de marbre. */
 .epigraphe {
-  max-width: 36rem; margin: 0 auto; padding: 8px var(--marge) 0;
-  text-align: center; font-size: clamp(1.25rem, 4.6vw, 1.5rem); font-style: italic; line-height: 1.5;
-  color: var(--texte);
+  margin: 0 max(var(--marge), calc((100% - 54rem) / 2)); padding: 34px clamp(20px, 5vw, 56px);
+  border-radius: 2px; text-align: center;
+  font: 600 clamp(1rem, 2.5vw, 1.375rem)/1.75 var(--titre); letter-spacing: .1em; text-transform: uppercase;
+  color: var(--sillon); text-shadow: var(--taille-forte);
 }
 
+/* Le séparateur : un sillon taillé, et au milieu un petit étendard rempli de minium. */
+.filet-orne {
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  margin: 22px auto 40px; max-width: 300px;
+}
+.filet-orne::before, .filet-orne::after {
+  content: ""; flex: 1; height: 2px;
+  background: linear-gradient(180deg, rgba(42, 38, 30, .42) 0 1px, rgba(255, 255, 255, .75) 1px 2px);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 40%); mask-image: linear-gradient(90deg, transparent, #000 40%);
+}
+.filet-orne::after { -webkit-mask-image: linear-gradient(270deg, transparent, #000 40%); mask-image: linear-gradient(270deg, transparent, #000 40%); }
+.filet-orne span {
+  /* un gonfanon à trois pointes, rempli de minium, pendu à sa traverse taillée */
+  width: 16px; height: 22px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 22'%3E%3Crect y='1' width='16' height='2' rx='1' fill='%233B3B37'/%3E%3Cpath d='M2.5 3H13.5V20L11 17.5 8 20 5 17.5 2.5 20Z' fill='%238E2A18'/%3E%3C/svg%3E") center / contain no-repeat;
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, .75));
+}
+
+/* Les six atouts : six dalles, le titre taillé, un mot rubriqué. */
 .atouts {
   list-style: none; padding: 0; margin: 0;
-  display: grid; gap: 16px; grid-template-columns: 1fr;
+  display: grid; gap: 18px; grid-template-columns: 1fr;
 }
-.atouts li {
-  position: relative;
-  background: linear-gradient(180deg, var(--panneau-haut), var(--panneau-bas));
-  border: 1px solid var(--filet);
-  border-radius: 4px;
-  padding: 26px 22px 24px;
-}
-.atouts li::before {
-  /* Le liseré de bronze en tête de panneau. */
-  content: ""; position: absolute; left: 22px; right: 22px; top: -1px; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--bronze), transparent);
-}
+.atouts li { position: relative; border-radius: 3px; padding: 28px 26px 26px; }
+.atouts li:nth-child(2) { background-position: 190px 70px; }
+.atouts li:nth-child(3) { background-position: 340px 260px; }
+.atouts li:nth-child(4) { background-position: 90px 400px; }
+.atouts li:nth-child(5) { background-position: 450px 140px; }
+.atouts li:nth-child(6) { background-position: 260px 330px; }
 .atouts h3 {
-  font-size: 1.1875rem; letter-spacing: .06em; color: var(--or); margin-bottom: 10px;
+  font-size: 1.125rem; line-height: 1.35; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--sillon); text-shadow: var(--taille-forte);
 }
-.atouts p { margin: 0; color: var(--texte); }
+.atouts h3::after {
+  /* un court sillon sous le titre */
+  content: ""; display: block; width: 46px; height: 2px; margin: 14px 0 14px;
+  background: linear-gradient(180deg, rgba(42, 42, 38, .45) 0 1px, rgba(255, 255, 255, .85) 1px 2px);
+}
+.atouts p { margin: 0; color: var(--encre); }
 
-/* ---------- Galerie ---------- */
+/* ---------- Galerie : les écrans du jeu, sertis dans le marbre comme entre ses barres ---------- */
 .piste {
-  display: flex; gap: 16px; list-style: none; padding: 4px var(--marge) 20px; margin: 0 calc(-1 * var(--marge));
-  overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: var(--filet) transparent;
+  display: flex; gap: 18px; list-style: none; padding: 6px var(--marge) 22px; margin: 0 calc(-1 * var(--marge));
+  overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: rgba(60, 50, 40, .35) transparent;
 }
 .piste > :first-child { margin-left: auto; }
 .piste > :last-child { margin-right: auto; }
 .piste > li { flex: 0 0 min(62vw, 240px); scroll-snap-align: center; }
 .piste figure { margin: 0; }
-.piste .cadre {
-  aspect-ratio: 1080 / 2400; border-radius: 18px; overflow: hidden;
-  border: 1px solid var(--filet-appuye);
-  background: radial-gradient(circle at 50% 45%, var(--panneau-haut), var(--creux) 75%);
-  box-shadow: 0 14px 40px rgba(0, 0, 0, .6), 0 0 0 4px var(--creux);
-}
-.piste .cadre { position: relative; }
+.piste .cadre { position: relative; aspect-ratio: 1080 / 2400; border-radius: 16px; padding: 9px; }
 .piste .cadre::before {
   /* Le sceau du jeu, en filigrane, tant que la capture n'a pas chargé. */
-  content: ""; position: absolute; inset: 0;
-  background: url("img/harena-256.png") center / 64px no-repeat;
-  opacity: .14;
+  content: ""; position: absolute; inset: 9px; border-radius: 8px;
+  background: #2a2723 url("img/harena-256.png") center / 64px no-repeat;
 }
-.piste img { position: relative; width: 100%; height: 100%; object-fit: cover; }
+.piste .cadre::after {
+  /* le creux : l'écran est enfoncé dans la dalle, son bord haut à l'ombre, sa lèvre basse au jour */
+  content: ""; position: absolute; inset: 9px; border-radius: 8px; pointer-events: none;
+  box-shadow: inset 0 2px 3px rgba(20, 14, 8, .55), inset 0 0 0 1px rgba(30, 24, 18, .6), 0 1px 0 rgba(255, 255, 255, .85);
+}
+.piste img { position: relative; width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
 .piste figcaption {
-  font: 600 .8125rem/1.3 var(--titre); letter-spacing: .14em; text-transform: uppercase;
-  color: var(--sourdine); text-align: center; margin-top: 14px;
+  font: 700 .8125rem/1.3 var(--titre); letter-spacing: .16em; text-transform: uppercase;
+  color: var(--sillon); text-shadow: var(--taille); text-align: center; margin-top: 14px;
 }
 /* Une capture absente retire son cadre ; sans aucune capture, la galerie s'efface. */
 .piste li[hidden] { display: none; }
 .galerie:not(:has(.piste li:not([hidden]))) { display: none; }
+.section.galerie { padding-bottom: 24px; }
 
-/* ---------- Devenir testeur ---------- */
+/* ---------- Devenir testeur : une plaque gravée ---------- */
 .testeur {
-  max-width: 40rem; margin: 0 auto; text-align: center;
-  padding: 44px 24px 40px;
-  border: 1px solid var(--bronze-eteint); border-radius: 4px;
-  background:
-    radial-gradient(ellipse 80% 70% at 50% 0%, rgba(168, 50, 31, .22), transparent 70%),
-    linear-gradient(180deg, var(--panneau-haut), var(--panneau-bas));
-  box-shadow: 0 0 0 4px var(--fond), 0 0 0 5px var(--filet);
+  position: relative; max-width: 42rem; margin: 0 auto; text-align: center;
+  padding: 52px clamp(24px, 6vw, 56px) 46px; border-radius: 3px;
 }
-.testeur h2 { font-size: clamp(1.5rem, 6vw, 2rem); letter-spacing: .06em; }
-.testeur p { margin: 0 0 14px; }
-.testeur .bouton { margin-top: 14px; }
-.testeur .adresse { margin: 22px 0 0; color: var(--sourdine); font-size: .9375rem; overflow-wrap: anywhere; }
+.testeur::before {
+  /* le cadre taillé de la plaque : un sillon à 12 px du bord */
+  content: ""; position: absolute; inset: 12px; pointer-events: none; border-radius: 2px;
+  border: 1px solid rgba(42, 42, 38, .34);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .8), inset 0 1px 0 rgba(255, 255, 255, .8);
+}
+.testeur h2 { font-size: clamp(1.5rem, 6vw, 2.125rem); }
+.testeur p { margin: 0 0 14px; color: var(--encre); }
+.testeur .bouton { margin-top: 16px; }
+.testeur .adresse {
+  margin: 24px 0 0; overflow-wrap: anywhere;
+  font: 600 .9375rem/1.4 var(--titre); letter-spacing: .06em; color: var(--sillon); text-shadow: var(--taille);
+}
+/* Le bouton de la plaque : du minium, et des lettres taillées claires. */
+.bouton.minium-plein, .testeur .bouton {
+  color: #F3E2CF; background: linear-gradient(#7C2417, #571509);
+  border: 1px solid #45110A;
+  text-shadow: 0 -1px 0 rgba(30, 6, 2, .6), 0 1px 0 rgba(255, 226, 206, .16);
+  box-shadow: inset 0 1px 0 rgba(255, 206, 180, .28), 0 1px 0 rgba(255, 255, 255, .8), 0 8px 18px -8px rgba(70, 20, 10, .65);
+}
+.testeur .bouton:hover { color: #FFF1E2; filter: brightness(1.1); }
 
-/* ---------- Pied de page ---------- */
+/* ---------- Pied de page : la barre basse du jeu ---------- */
 .pied {
-  border-top: 1px solid var(--filet); margin-top: 24px;
-  padding: 40px var(--marge) 48px; text-align: center;
-  color: var(--sourdine); font-size: .9375rem;
+  margin-top: 32px; border-width: 1px 0 0; border-radius: 0;
+  padding: 40px var(--marge) 44px; text-align: center;
+  font: 600 .875rem/1.5 var(--titre); letter-spacing: .08em;
+  color: var(--sillon); text-shadow: var(--taille);
 }
-.pied .studio { width: 168px; height: auto; margin: 0 auto 18px; opacity: .78; }
+.pied .studio {
+  width: 168px; height: auto; margin: 0 auto 18px;
+  /* le logo blanc du studio, taillé : la pierre dans son ombre, une lèvre de jour dessous */
+  filter: brightness(0) invert(.23) drop-shadow(0 1px 0 rgba(255, 255, 255, .8));
+}
 .pied p { margin: 6px 0; }
-.pied a { color: var(--texte); }
+.pied a { color: var(--minium); text-shadow: var(--taille-minium); }
 
 /* ---------- Page d'informations ---------- */
 .barre {
   position: relative; display: flex; align-items: center;
-  padding: 12px var(--marge); min-height: 68px;
-  border-bottom: 1px solid var(--filet);
+  padding: 12px var(--marge); min-height: 68px; border-width: 0 0 1px;
 }
 .barre .retour {
   display: flex; align-items: center; gap: 12px; text-decoration: none;
   font: 900 1.375rem/1 var(--titre); letter-spacing: .1em;
 }
-.barre .retour img { width: 40px; height: 40px; border-radius: 9px; border: 1px solid rgba(240, 210, 122, .35); }
-.barre .langues { top: 12px; }
-
-.texte { max-width: 42rem; margin: 0 auto; padding: 48px var(--marge) 24px; }
-.texte h1 { font-size: clamp(1.75rem, 7vw, 2.5rem); letter-spacing: .05em; color: var(--or); }
-.texte h2 {
-  font-size: 1.375rem; letter-spacing: .06em; margin: 48px 0 6px;
-  padding-bottom: 10px; border-bottom: 1px solid var(--filet);
+.barre .retour .or-grave {
+  /* HARENA, taillé plus profond, comme le nom de maison dans la barre du jeu */
+  background: none; -webkit-text-fill-color: currentColor; filter: none;
+  color: var(--sillon-profond); text-shadow: var(--taille-forte);
 }
-.texte h3 { font-size: 1.0625rem; letter-spacing: .05em; color: var(--bronze); margin: 28px 0 6px; }
+.barre .retour img { width: 40px; height: 40px; border-radius: 9px; border: 1px solid var(--joint); }
+.barre .langues {
+  /* sur la dalle, le cartouche de langue est une plaque sombre sertie dans le marbre (charte du jeu) */
+  top: 12px; background: #2E2B26; backdrop-filter: none;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, .55), 0 1px 0 rgba(255, 255, 255, .85);
+}
+.barre .langues button { color: #CFC6B6; }
+
+.texte {
+  max-width: 46rem; margin: 40px auto 24px; padding: 48px clamp(20px, 6vw, 60px) 32px; border-radius: 3px;
+  background: linear-gradient(rgba(246, 245, 241, .55), rgba(246, 245, 241, .55)), var(--marbre);
+  color: var(--encre);
+}
+.texte h1 {
+  font-size: clamp(1.625rem, 6.5vw, 2.375rem); letter-spacing: .07em; text-transform: uppercase;
+  color: var(--sillon-profond); text-shadow: var(--taille-forte);
+}
+.texte h2 {
+  font-size: 1.3125rem; letter-spacing: .08em; text-transform: uppercase; margin: 52px 0 8px; padding-bottom: 12px;
+  color: var(--sillon); text-shadow: var(--taille-forte);
+  background: linear-gradient(180deg, rgba(42, 42, 38, .4) 0 1px, rgba(255, 255, 255, .85) 1px 2px) bottom / 100% 2px no-repeat;
+  counter-reset: article;
+}
+.texte h3 {
+  font-size: 1.0625rem; letter-spacing: .05em; margin: 30px 0 6px;
+  color: var(--sillon); text-shadow: var(--taille);
+}
+.texte h3::before {
+  /* les articles, numérotés à la romaine, au minium */
+  counter-increment: article; content: counter(article, upper-roman) "\00a0·\00a0";
+  color: var(--minium); text-shadow: var(--taille-minium);
+}
 .texte p { margin: 0 0 12px; }
-.texte .date { color: var(--sourdine); font-style: italic; margin-top: 14px; }
+.texte .date { color: var(--encre-douce); font-style: italic; margin-top: 14px; }
+.texte ul { padding-left: 1.2em; margin: 8px 0 16px; }
+.texte li { margin: 6px 0; }
+.texte li::marker { color: var(--minium); }
 
 @media (min-width: 640px) {
   :root { --marge: 32px; }
-  .atouts { grid-template-columns: 1fr 1fr; gap: 20px; }
-  .entete .icone { width: 104px; height: 104px; border-radius: 24px; }
-  .entete .sous-titre { font-size: .9375rem; }
+  .atouts { grid-template-columns: 1fr 1fr; gap: 22px; }
 }
 @media (min-width: 980px) {
   .atouts { grid-template-columns: repeat(3, 1fr); }
@@ -303,13 +405,10 @@ h1, h2, h3 { font-family: var(--titre); font-weight: 700; line-height: 1.2; marg
 @media (max-width: 359px) {
   .barre .retour span { display: none; }
 }
+@media (max-width: 520px) {
+  .texte { margin: 20px 10px; }
+}
 @media (prefers-reduced-motion: reduce) {
   .bouton { transition: none; }
   .bouton:hover { transform: none; }
 }
-
-
-/* Listes de la page d informations. */
-.texte ul { padding-left: 1.2em; margin: 8px 0 16px; }
-.texte li { margin: 6px 0; }
-.texte li::marker { color: var(--bronze); }
