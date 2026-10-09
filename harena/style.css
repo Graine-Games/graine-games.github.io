@@ -68,6 +68,23 @@ h1, h2, h3 { font-family: var(--titre); font-weight: 700; line-height: 1.2; marg
 .langues button:hover { color: var(--texte); }
 .langues button[aria-pressed="true"] { color: var(--or); text-decoration: underline 1px; text-underline-offset: 6px; }
 
+/* La barre du haut de l'accueil : la musique, puis les langues. */
+.haut {
+  position: absolute; top: 12px; right: var(--marge); z-index: 5;
+  display: flex; align-items: center; gap: 8px;
+}
+.haut .langues { position: static; }
+.son {
+  display: grid; place-items: center; width: 48px; height: 48px; padding: 0;
+  border: 0; border-radius: 50%; cursor: pointer; color: var(--sourdine);
+  background: rgba(20, 16, 15, .6); backdrop-filter: blur(6px);
+}
+.son:hover { color: var(--texte); }
+.son[aria-pressed="true"] { color: var(--or); }
+.son svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.son .hp { fill: currentColor; }
+.son[aria-pressed="false"] .ondes, .son[aria-pressed="true"] .muet { display: none; }
+
 /* Le mot doré, comme sur l'écran titre. */
 .or-grave {
   color: var(--or);
@@ -152,7 +169,7 @@ h1, h2, h3 { font-family: var(--titre); font-weight: 700; line-height: 1.2; marg
 }
 /* Très grand écran : l'appel et les langues grandissent avec la scène. */
 @media (min-width: 1800px) and (min-height: 1000px) {
-  .appel, .langues { zoom: 1.3; }
+  .appel, .haut { zoom: 1.3; }
 }
 
 /* ---------- Sections ---------- */

@@ -12,7 +12,7 @@ T = ctx.__T;
 const erreurs = [];
 for (const page of ['index.html', 'confidentialite.html']) {
   const html = readFileSync(page, 'utf8');
-  for (const [, k] of html.matchAll(/data-i18n(?:-alt)?="([^"]+)"/g))
+  for (const [, k] of html.matchAll(/data-i18n(?:-alt|-aria)?="([^"]+)"/g))
     for (const l of ['en', 'es']) if (!T[l][k]) erreurs.push(`${page} : « ${k} » manque en ${l}`);
   for (const [, p] of html.matchAll(/(?:src|href)="([^"#]+)"/g)) {
     if (/^(https?:|mailto:)/.test(p)) continue;

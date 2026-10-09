@@ -13,6 +13,7 @@
       accroche: 'Found your house, recruit your gladiators and forge your glory in the sand of the colosseum.',
       cta: 'Become a tester',
       arenaSousTitre: 'GLADIATORS',
+      son: 'Arena music',
       mention: 'On Android · in testing',
       epigraphe: 'The crowd roars. Your banner flies above the sand. Your gladiators step into the arena.',
       jeuTitre: 'What awaits you',
@@ -94,7 +95,7 @@
       mlHebTitre: 'Host',
       mlHebTexte: 'GitHub Pages, a service of GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, United States<!-- A COMPLETER PAR LE PORTEUR : telephone de l’hebergeur -->. Website: <a href="https://github.com">github.com</a>.',
       creditsTitre: 'Credits',
-      creditsTexte: 'Heading typeface: Cinzel, © The Cinzel Project Authors, under the SIL Open Font License 1.1 (<a href="' + OFL + '">licence text</a>). The Android robot is reproduced or modified from work created and shared by Google and used according to terms described in the Creative Commons 3.0 Attribution License.',
+      creditsTexte: 'Heading typeface: Cinzel, © The Cinzel Project Authors, under the SIL Open Font License 1.1 (<a href="' + OFL + '">licence text</a>). The Android robot is reproduced or modified from work created and shared by Google and used according to terms described in the Creative Commons 3.0 Attribution License. Music: composed for HARENA, © Graine Games.',
     },
     es: {
       titre: 'HARENA',
@@ -103,6 +104,7 @@
       accroche: 'Funda tu casa, recluta a tus gladiadores y forja tu gloria en la arena del coliseo.',
       cta: 'Hazte probador',
       arenaSousTitre: 'GLADIADORES',
+      son: 'Música de la arena',
       mention: 'En Android · en pruebas',
       epigraphe: 'La multitud ruge. Tu estandarte ondea sobre la arena. Tus gladiadores entran en la arena.',
       jeuTitre: 'Lo que te espera',
@@ -184,21 +186,24 @@
       mlHebTitre: 'Alojamiento',
       mlHebTexte: 'GitHub Pages, servicio de GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, Estados Unidos<!-- A COMPLETER PAR LE PORTEUR : telephone de l’hebergeur -->. Sitio: <a href="https://github.com">github.com</a>.',
       creditsTitre: 'Créditos',
-      creditsTexte: 'Tipografía de los títulos: Cinzel, © The Cinzel Project Authors, bajo licencia SIL Open Font License 1.1 (<a href="' + OFL + '">texto de la licencia</a>). El robot de Android se reproduce o modifica a partir de una obra creada y compartida por Google, y se usa según los términos de la licencia Creative Commons Atribución 3.0.',
+      creditsTexte: 'Tipografía de los títulos: Cinzel, © The Cinzel Project Authors, bajo licencia SIL Open Font License 1.1 (<a href="' + OFL + '">texto de la licencia</a>). El robot de Android se reproduce o modifica a partir de una obra creada y compartida por Google, y se usa según los términos de la licencia Creative Commons Atribución 3.0. Música: compuesta para HARENA, © Graine Games.',
     }
   };
 
   var textes = document.querySelectorAll('[data-i18n]');
   var alts = document.querySelectorAll('[data-i18n-alt]');
+  var arias = document.querySelectorAll('[data-i18n-aria]');
   var boutons = document.querySelectorAll('.langues button');
   var fr = {};
   textes.forEach(function (n) { fr[n.dataset.i18n] = n.innerHTML; });
   alts.forEach(function (n) { fr['alt:' + n.dataset.i18nAlt] = n.alt; });
+  arias.forEach(function (n) { fr['aria:' + n.dataset.i18nAria] = n.getAttribute('aria-label'); });
 
   function pose(langue) {
     var d = T[langue] || {};
     textes.forEach(function (n) { var k = n.dataset.i18n; n.innerHTML = d[k] || fr[k]; });
     alts.forEach(function (n) { var k = n.dataset.i18nAlt; n.alt = d[k] || fr['alt:' + k]; });
+    arias.forEach(function (n) { var k = n.dataset.i18nAria; n.setAttribute('aria-label', d[k] || fr['aria:' + k]); });
     boutons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.lang === langue)); });
     document.documentElement.lang = langue;
   }

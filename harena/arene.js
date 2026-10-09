@@ -165,7 +165,7 @@
     const N = Math.max(180, L / 3.2);
     const Y = (y0, c, x) => y0 - c * ((x - cx) / N) ** 2;
     const SABLE = x => Y(612, -8, x);
-    const K = s * Math.min(2, window.devicePixelRatio || 1, Math.sqrt(4.5e6 / (W * H)));   // px de canvas par unite
+    const K = s * Math.min(2, window.devicePixelRatio || 1);   // px de canvas par unite : la densite de l'ecran, plafonnee a 2
     const BAS = HL - DECALE + 10;
     entete.style.setProperty('--s', s.toFixed(4));
     graine = 20261008;
@@ -308,17 +308,16 @@
       cv.style.top = (y0 / HL * 100).toFixed(3) + '%'; cv.style.height = ((y1 - y0) / HL * 100).toFixed(3) + '%';
       return cv.getContext('2d');
     };
-    const KF = K / 2;                                                 // rais et ombres sont flous : demi-resolution
     const [voile, diffus, chaleur] = scene.querySelectorAll('.lumiere');
 
     // ------------------------------------------------------------ le ciel vivant
-    // Des nuages en bruit fractal (Perlin), calcules sur une grille basse resolution puis agrandis avec
-    // lissage, eclaires depuis le soleil. La couverture du soleil regle la lumiere de toute la scene, les
-    // ombres des nuages sur l'arene et les rais de lumiere quand il sort. Les grilles grossissent avec la
-    // largeur pour que le calcul reste borne (16 000 cases de ciel, 5 000 de rais, 6 000 d'ombres).
+    // Des nuages en bruit fractal (Perlin), calcules sur une grille d'environ 3 px d'ecran puis agrandis avec
+    // lissage, sans flou : le bord reste net. Ils sont eclaires depuis le soleil ; la couverture du soleil regle la
+    // lumiere de toute la scene, les ombres des nuages sur les gradins et les rais quand il sort. Les grilles sont
+    // bornees (60 000 cases de ciel, 5 000 de rais, 6 000 d'ombres) et le bruit se calcule en trois tranches.
     const ciel = (() => {
       const HC = 236 + DECALE + 19;                                   // jusque sous l'attique, au plus bas au centre
-      const CASE = Math.max(4, Math.sqrt(L * HC / 16000)), GL = Math.ceil(L / CASE), GH = Math.ceil(HC / CASE);
+      const CASE = Math.max(2.5, 3 / s, Math.sqrt(L * HC / 60000)), GL = Math.ceil(L / CASE), GH = Math.ceil(HC / CASE);
       const SOL = [cx + 70, 15];
       const perm = new Uint8Array(512);
       { const p = [...Array(256).keys()]; for (let i = 255; i > 0; i--) { const j = (alea() * (i + 1)) | 0; [p[i], p[j]] = [p[j], p[i]]; } for (let i = 0; i < 512; i++) perm[i] = p[i & 255]; }
@@ -339,29 +338,33 @@
       const bg = bas.getContext('2d'), img = bg.createImageData(GL, GH);
       const dens = new Float32Array(GL * GH), alpha = new Float32Array(GL * GH);
       const RC = Math.max(8, Math.sqrt(L * HL / 5000)), RL = Math.ceil(L / RC), RH = Math.ceil(HL / RC);
-      const gR = toile(cvR, 0, HL, KF), rais = document.createElement('canvas'); rais.width = RL; rais.height = RH;
+      const gR = toile(cvR, 0, HL), rais = document.createElement('canvas'); rais.width = RL; rais.height = RH;
       const rg = rais.getContext('2d'), rimg = rg.createImageData(RL, RH);
-      const OY = Math.floor(Y(236, 30, -10) + DECALE - 31), OC = Math.max(8, Math.sqrt(L * (HL - OY) / 6000)), OL = Math.ceil(L / OC), OH = Math.ceil((HL - OY) / OC);
-      const gO = toile(cvO, OY, HL, KF), ombres = document.createElement('canvas'); ombres.width = OL; ombres.height = OH;
+      // les ombres ne tombent que sur les gradins : elles s'eteignent sur le parapet, au-dessus du mur du podium
+      const OY = Math.floor(Y(236, 30, -10) + DECALE - 31), OB = HAUT.podium[0] + DECALE + 2;
+      const OC = Math.max(8, Math.sqrt(L * (OB - OY) / 6000)), OL = Math.ceil(L / OC), OH = Math.ceil((OB - OY) / OC);
+      const gO = toile(cvO, OY, OB), ombres = document.createElement('canvas'); ombres.width = OL; ombres.height = OH;
       const og = ombres.getContext('2d'), oimg = og.createImageData(OL, OH);
       const PAS = 6.8 / CASE, VOISIN = Math.max(1, Math.round(8 / CASE));
       let dernier = 0, lisseCouv = -1;
 
-      function nuages(tr) {
-        const d = img.data;
-        for (let j = 0; j < GH; j++) {
+      function bruit(tr, j0, j1) {
+        for (let j = j0; j < j1; j++) {
           const y = (j + .5) * CASE, hor = Math.min(1, y / 288);        // 0 au-dessus de nous, 1 a l'horizon
           for (let i = 0; i < GL; i++) {
             const x = (i + .5) * CASE - dx, k = j * GL + i;
             // cumulus : gros au-dessus de nous, plus petits et aplatis vers l'horizon
             const sx = 104 - 52 * hor, sy = 64 - 36 * hor, nc = fbm(x / sx + tr * .035, y / sy + tr * .004, 4);
             const rc = nc + .05 * hor - .075, dc = lisse(0, .11, rc);
-            const nf = fbm(x / 80 + tr * .07 + 31, y / 40 + 4.7, 3), rf = nf - .24, df = lisse(0, .1, rf) * lisse(.5, .74, hor);
+            const nf = hor > .5 ? fbm(x / 80 + tr * .07 + 31, y / 40 + 4.7, 3) : 0, rf = nf - .24, df = lisse(0, .1, rf) * lisse(.5, .74, hor);
             const ni = fbm(x / 240 + tr * .01, y / 26 + 7.3, 3), di = lisse(.16, .5, ni) * .22 * (1 - hor);   // cirrus
             dens[k] = Math.max(Math.min(1, rc * 3.2) * dc, Math.min(1, rf * 3.4) * df);
             alpha[k] = 1 - (1 - dc) * (1 - df) * (1 - di);
           }
         }
+      }
+      function eclairer() {
+        const d = img.data;
         const D = (i, j) => (i < 0 || j < 0 || i >= GL || j >= GH) ? 0 : dens[j * GL + i];
         for (let j = 0; j < GH; j++) for (let i = 0; i < GL; i++) {
           const k = j * GL + i, al = alpha[k], o = k * 4;
@@ -395,7 +398,7 @@
         return n ? sm / n : 0;
       }
       function dessinerRais(force) {
-        gR.setTransform(KF, 0, 0, KF, 0, 0); gR.clearRect(0, 0, L, HL);
+        gR.setTransform(K, 0, 0, K, 0, 0); gR.clearRect(0, 0, L, HL);
         cvR.style.visibility = force < .01 ? 'hidden' : '';         // sans rais, le calque ne se compose plus
         if (force < .01) return;
         const d = rimg.data, haut = GH * CASE - 2;
@@ -417,33 +420,38 @@
       function dessinerOmbres(tr, force) {
         const d = oimg.data;
         for (let i = 0; i < OL; i++) {
-          const x = (i + .5) * OC, haut = Y(236, 30, x) + DECALE - 31;   // l'ombre nait sous la corniche
+          const x = (i + .5) * OC, haut = Y(236, 30, x) + DECALE - 31, parapet = Y(HAUT.parapet[0], HAUT.parapet[1], x) + DECALE;   // sous la corniche, jusqu'au parapet
           for (let j = 0; j < OH; j++) {
             const y = OY + (j + .5) * OC, prof = clamp((y - 250) / 530, 0, 1.3);   // la perspective du prototype, comptee depuis 250
             const n = fbm((x - dx) / (120 + 170 * prof) + tr * .035 + 3.7, (y - 250) / (42 + 95 * prof) + tr * .004 + 1.9, 4);
-            const al = lisse(-.01, .09, n - .015) * force * lisse(haut, haut + 26, y), o = (j * OL + i) * 4;
-            d[o] = 58; d[o + 1] = 68; d[o + 2] = 96; d[o + 3] = al * 128;
+            const al = lisse(-.01, .09, n - .015) * force * lisse(haut, haut + 26, y) * (1 - lisse(parapet, parapet + 12, y)), o = (j * OL + i) * 4;
+            d[o] = 58; d[o + 1] = 68; d[o + 2] = 96; d[o + 3] = al * 50;   // une ombre legere (le prototype : 128)
           }
         }
         og.putImageData(oimg, 0, 0);
-        gO.setTransform(KF, 0, 0, KF, 0, -OY * KF); gO.clearRect(0, OY, L, HL - OY);
+        gO.setTransform(K, 0, 0, K, 0, -OY * K); gO.clearRect(0, OY, L, OB - OY);
         gO.imageSmoothingQuality = 'high'; gO.drawImage(ombres, 0, OY, OL * OC, OH * OC);
       }
-      let pas = -1, etape = 3, trRais = 0, forceRais = 0, forceOmbres = 1;
+      let pas = -1, etape = 7, trB = 0, forceRais = 0, forceOmbres = 1;
+      const tranche = e => [Math.floor(GH * e / 4), Math.floor(GH * (e + 1) / 4)];
       return (tr, tout) => {
         // le ciel commence 25 s plus loin dans son histoire : l'arene arrive au soleil, le premier voile
         // tombe vers 20 s, le soleil ressort avec ses rais vers 46 s
         tr = calme ? 30 : tr + 25;
         // le bruit se recalcule 10 fois par seconde (les nuages derivent de moins d'une unite par pas) ; le travail
-        // se repartit sur trois images : nuages, rais, ombres
+        // se repartit sur sept images : quatre tranches de bruit, la lumiere des nuages, les rais, les ombres
         const q = Math.floor(tr * 10);
-        if (q === pas && !tout) {
-          if (etape === 1) { dessinerRais(forceRais); etape = 2; }
-          else if (etape === 2) { dessinerOmbres(trRais, forceOmbres); etape = 3; }
-          return;
-        }
-        pas = q;
-        nuages(tr);
+        if (tout) { trB = tr; bruit(tr, 0, GH); composer(true); pas = q; etape = 7; return; }
+        if (etape >= 7) { if (q === pas) return; pas = q; etape = 0; trB = tr; }
+        if (etape < 4) bruit(trB, ...tranche(etape));
+        else if (etape === 4) composer(false);
+        else if (etape === 5) dessinerRais(forceRais);
+        else dessinerOmbres(trB, forceOmbres);
+        etape++;
+      };
+      function composer(tout) {
+        const tr = trB;
+        eclairer();
         const c = couverture(), dt = Math.max(0, tr - dernier); dernier = tr;
         lisseCouv = lisseCouv < 0 || calme ? c : lisseCouv + (c - lisseCouv) * Math.min(1, dt / .9);
         couv = lisseCouv;
@@ -454,7 +462,8 @@
         halo.addColorStop(.25, `rgba(255,233,176,${(.42 * (.3 + .7 * soleil)).toFixed(3)})`); halo.addColorStop(1, 'rgba(255,240,210,0)');
         g.fillStyle = halo; g.fillRect(0, 0, L, HC);
         g.fillStyle = '#fffdf4'; g.beginPath(); g.arc(SOL[0], SOL[1], 12, 0, 7); g.fill();
-        g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high'; g.filter = `blur(${(.55 * CASE * K).toFixed(2)}px)`;   // le flou suit la case : aucune marche visible
+        g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
+        g.filter = `blur(${(.35 * CASE * K).toFixed(2)}px)`;   // un tiers de case (~1 px) : efface les marches, garde le bord net
         g.drawImage(bas, 0, 0, GL * CASE, GH * CASE); g.filter = 'none';
         g.globalCompositeOperation = 'screen';
         const bloom = g.createRadialGradient(SOL[0], SOL[1], 0, SOL[0], SOL[1], 70);
@@ -464,9 +473,9 @@
         for (const [el, o] of [[voile, couv], [diffus, couv * .28], [chaleur, soleil * .5]]) {   // un calque eteint ne se compose plus
           el.style.opacity = o.toFixed(3); el.style.visibility = o < .01 ? 'hidden' : '';
         }
-        forceRais = calme ? 0 : soleil * Math.min(1, encombrement() * 2.2); forceOmbres = .25 + .75 * soleil; trRais = tr;
-        if (tout) { dessinerRais(forceRais); dessinerOmbres(tr, forceOmbres); etape = 3; } else etape = 1;
-      };
+        forceRais = calme ? 0 : soleil * Math.min(1, encombrement() * 2.2); forceOmbres = .25 + .75 * soleil;
+        if (tout) { dessinerRais(forceRais); dessinerOmbres(tr, forceOmbres); }
+      }
     })();
 
     // ------------------------------------------------------------ la foule
@@ -552,16 +561,57 @@
       reflet.setAttribute('opacity', Math.sin(Math.PI * v).toFixed(3));
     }
 
-    // ------------------------------------------------------------ l'avant : les etendards au mur, la poussiere de la porte
-    // Les deux du jeu de part et d'autre de la porte ; sur un ecran large, une paire de plus au mur du podium.
-    const murs = [];
-    for (let k = 0; k < 2; k++) {
-      const e = 136 + 300 * k;
-      if (k && cx - e < 70) break;
-      for (const [m0, x, ph] of [[MAISONS[0], cx - e, 1.1 * k], [MAISONS[1], cx + e, 2.3 + 1.1 * k]]) murs.push({ m: m0, x, ph, clou: Y(475, 11, x) - .7 });
+    // ------------------------------------------------------------ l'avant : etendards, torches, poussiere de la porte
+    // Les deux etendards du jeu de part et d'autre de la porte ; quand la largeur le permet, deux torches plus loin
+    // au mur du podium, a la place qu'aurait une seconde paire d'etendards.
+    const murs = [[MAISONS[0], cx - 136, 0], [MAISONS[1], cx + 136, 2.3]].map(([m0, x, ph]) => ({ m: m0, x, ph, clou: Y(475, 11, x) - .7 }));
+    const torches = cx - 436 < 70 ? [] : [[cx - 436, .7], [cx + 436, 2.9]].map(([x, ph]) => ({ x, ph, y: Y(475, 11, x) + 56,
+      braises: Array.from({ length: 8 }, () => ({ u: alea(), v: alea(), vit: .7 + alea() * .6, ph: alea() * 6.28 })) }));
+    const SC = Math.max(2, Math.ceil(K)), TORCHE = 1.5;             // l'echelle d'une torche
+    const hautA = Math.min(...murs.map(e => e.clou), ...torches.map(t => t.y - 64 * TORCHE)) + DECALE - 8, basA = Math.max(706, ...murs.map(e => e.clou + EBH)) + DECALE + 4;
+    // Une torche de bronze : platine rivetee, tige baguee, coupe a godrons ; une flamme qui vacille, quelques braises
+    // qui montent, et sa lueur qui chauffe le marbre autour. Coordonnees : le bord de la coupe en (x, y).
+    function torche(t, tr) {
+      const { ph } = t, x = 0, y = 0;
+      gA.save(); gA.translate(t.x, t.y); gA.scale(TORCHE, TORCHE);
+      const v = calme ? 0 : .5 * Math.sin(tr * 13 + ph) + .3 * Math.sin(tr * 7.3 + ph * 1.7) + .2 * Math.sin(tr * 23 + ph * .3);   // le vacillement, de -1 a 1
+      const pench = calme ? 0 : 1.4 * Math.sin(tr * 2.1 + ph) + .6 * v;
+      const lueur = gA.createRadialGradient(x, y - 10, 0, x, y - 10, 42 * (1 + .04 * v));
+      lueur.addColorStop(0, `rgba(255,170,84,${(.5 + .06 * v).toFixed(3)})`); lueur.addColorStop(.4, 'rgba(255,150,70,.2)'); lueur.addColorStop(1, 'rgba(255,140,60,0)');
+      gA.fillStyle = lueur; gA.fillRect(x - 46, y - 54, 92, 92);
+      const p = new Path2D(); arrondi(p, x - 3.2, y + 11, 6.4, 21, 1.2);                     // la platine, au mur
+      gA.fillStyle = '#4a3714'; gA.fill(p); gA.strokeStyle = 'rgba(201,162,74,.55)'; gA.lineWidth = .5; gA.stroke(p);
+      gA.fillStyle = '#c9a24a'; for (const dy of [14.5, 28.5]) { gA.beginPath(); gA.arc(x, y + dy, .9, 0, 7); gA.fill(); }
+      gA.fillStyle = '#35260f'; gA.fillRect(x - 1.3, y + 5, 2.6, 7);                         // la tige et sa bague
+      gA.fillStyle = '#b48a3a'; gA.fillRect(x - 2.3, y + 7.6, 4.6, 1.6);
+      const coupe = gA.createLinearGradient(x - 8, 0, x + 8, 0);
+      coupe.addColorStop(0, '#2c2112'); coupe.addColorStop(.38, '#8a6a2c'); coupe.addColorStop(.6, '#5a4219'); coupe.addColorStop(1, '#22190d');
+      gA.fillStyle = coupe; gA.beginPath(); gA.moveTo(x - 8, y); gA.lineTo(x + 8, y);
+      gA.quadraticCurveTo(x + 6.6, y + 5.6, x + 2.8, y + 6.6); gA.lineTo(x - 2.8, y + 6.6); gA.quadraticCurveTo(x - 6.6, y + 5.6, x - 8, y); gA.fill();
+      gA.strokeStyle = 'rgba(20,12,4,.45)'; gA.lineWidth = .45; gA.beginPath();
+      for (const d of [-4.6, -1.6, 1.6, 4.6]) { gA.moveTo(x + d, y + .8); gA.lineTo(x + d * .55, y + 6); }
+      gA.stroke();
+      gA.fillStyle = '#c9a24a'; gA.beginPath(); gA.ellipse(x, y, 8.6, 1.7, 0, 0, 7); gA.fill();             // le bord, et les braises dedans
+      gA.fillStyle = '#3a1a08'; gA.beginPath(); gA.ellipse(x, y - .15, 7.1, 1.05, 0, 0, 7); gA.fill();
+      gA.globalCompositeOperation = 'lighter';
+      gA.fillStyle = 'rgba(255,120,40,.55)'; gA.beginPath(); gA.ellipse(x, y - .2, 5.5, .8, 0, 0, 7); gA.fill();
+      const h = 21 * (1 + .14 * v), w = 9 * (1 - .05 * v);
+      for (const [sc, coul, flou] of [[1, 'rgba(206,70,22,.72)', 8], [.72, 'rgba(255,142,44,.82)', 0], [.42, 'rgba(255,230,160,.95)', 0]]) {
+        const hh = h * sc, ww = w * sc, px = x + pench * sc;
+        gA.shadowBlur = flou * K; gA.shadowColor = 'rgba(255,120,30,.8)'; gA.fillStyle = coul; gA.beginPath();
+        gA.moveTo(x - ww / 2, y - .5);
+        gA.bezierCurveTo(x - ww * .62, y - hh * .45, px - ww * .14, y - hh * .76, px, y - hh);
+        gA.bezierCurveTo(px + ww * .14, y - hh * .76, x + ww * .62, y - hh * .45, x + ww / 2, y - .5);
+        gA.closePath(); gA.fill();
+      }
+      gA.shadowBlur = 0;
+      if (!calme) for (const b of t.braises) {
+        const k = (b.v + tr * b.vit * .45) % 1, by = y - 8 - k * 46, bx = x + pench * .4 + (b.u - .5) * 7 + 3.5 * Math.sin(tr * 1.7 * b.vit + b.ph) * k;
+        gA.fillStyle = `rgba(255,196,110,${((1 - k) * (.6 + .4 * Math.sin(tr * 9 + b.ph))).toFixed(3)})`;
+        gA.beginPath(); gA.arc(bx, by, .6 * (1 - .5 * k), 0, 7); gA.fill();
+      }
+      gA.restore();
     }
-    const SC = Math.max(2, Math.ceil(K));
-    const hautA = Math.min(...murs.map(e => e.clou)) + DECALE - 8, basA = Math.max(706, ...murs.map(e => e.clou + EBH)) + DECALE + 4;
     const gA = toile(cvA, hautA, basA);
     const grains = Array.from({ length: 34 }, () => { const v = alea(); return { u: alea(), v, s: .6 + alea() * 1.1, ph: alea() * 6.28, vit: .5 + alea() }; });
     function avant(tr) {
@@ -588,6 +638,7 @@
           gA.globalAlpha = 1;
         }
       }
+      for (const t of torches) torche(t, tr);
       if (calme) return;
       for (const gr of grains) {                                      // la poussiere doree qui flotte dans la lumiere de la porte
         const k = (gr.v + tr * .012 * gr.vit) % 1, y = 700 - k * 250, demi = 54 + (y - 470) * .55;
@@ -597,11 +648,13 @@
     }
 
     texturer(SC, () => { if (!boucle) dessiner(true); });
-    // La foule et le guerrier bougent lentement : chacun a 30 images par seconde, en alternance.
-    let impair = false;
+    // La foule et le guerrier bougent lentement : le guerrier a 30 images par seconde, la foule aussi, ou a 20
+    // quand elle depasse 4 000 spectateurs (ecran large) ; jamais sur la meme image.
+    const rythme = rangs.reduce((n, R) => n + R.gens.length, 0) > 4000 ? 3 : 2;
+    let image = 0;
     return (tr, tout) => {
-      const t = calme ? 6 : tr; impair = !impair;
-      ciel(t, tout); if (tout || impair) foule(t); if (tout || !impair) guerrier(t); avant(t);
+      const t = calme ? 6 : tr; image++;
+      ciel(t, tout); if (tout || image % rythme === 0) foule(t); if (tout || image % 2 === 1) guerrier(t); avant(t);
     };
   }
 
@@ -648,4 +701,38 @@
   else addEventListener('resize', plusTard);
   if (window.IntersectionObserver) new IntersectionObserver(e => { visible = e[e.length - 1].isIntersecting; planifier(); }).observe(entete);
   document.addEventListener('visibilitychange', planifier);
+})();
+
+// La musique de l'ecran titre : coupee a chaque visite (jamais de son impose), elle ne se telecharge qu'au premier
+// toucher du bouton. Elle monte en 2 s jusqu'a un volume discret, s'efface en 0,8 s, se tait quand l'onglet est
+// cache et reprend au retour si elle jouait. (iOS ignore le volume d'un element audio : la elle part a plein.)
+(function () {
+  'use strict';
+  const bouton = document.querySelector('.son'), audio = document.querySelector('audio.musique');
+  if (!bouton || !audio) return;
+  const VOLUME = .25;
+  let veut = false, fondu = 0;
+  const vers = (cible, ms, puis) => {
+    clearInterval(fondu);
+    const v0 = audio.volume, t0 = performance.now();
+    fondu = setInterval(() => {
+      const u = Math.min(1, (performance.now() - t0) / ms);
+      audio.volume = v0 + (cible - v0) * u;
+      if (u >= 1) { clearInterval(fondu); if (puis) puis(); }
+    }, 40);
+  };
+  const jouer = ms => {
+    audio.play().then(() => vers(VOLUME, ms)).catch(() => { veut = false; bouton.setAttribute('aria-pressed', 'false'); });
+  };
+  bouton.addEventListener('click', () => {
+    veut = !veut;
+    bouton.setAttribute('aria-pressed', String(veut));
+    if (veut) { clearInterval(fondu); if (audio.paused) audio.volume = 0; jouer(2000); }
+    else vers(0, 800, () => audio.pause());
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (!veut) return;
+    if (document.hidden) { clearInterval(fondu); audio.pause(); }
+    else { audio.volume = 0; jouer(1000); }
+  });
 })();

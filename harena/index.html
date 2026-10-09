@@ -15,7 +15,7 @@
 <link rel="icon" href="favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="preload" href="fonts/Cinzel.ttf" as="font" type="font/ttf" crossorigin>
-<link rel="stylesheet" href="style.css?v=20261009g">
+<link rel="stylesheet" href="style.css?v=20261009h">
 </head>
 <body>
 <a class="lien-evitement" href="#jeu" data-i18n="evitement">Aller au contenu</a>
@@ -23,11 +23,18 @@
 <header class="entete">
   <!-- L'arene de l'ecran titre, vivante : arene.js la dessine ici (portage de harena/docs/maquettes/lancement.html). -->
   <div class="arene" aria-hidden="true"></div>
-  <nav class="langues" aria-label="Langue">
-    <button type="button" data-lang="fr" lang="fr" aria-pressed="true">FR</button>
-    <button type="button" data-lang="en" lang="en" aria-pressed="false">EN</button>
-    <button type="button" data-lang="es" lang="es" aria-pressed="false">ES</button>
-  </nav>
+  <div class="haut">
+    <!-- La musique de l'ecran titre, coupee a chaque visite : elle ne se charge qu'au premier toucher. -->
+    <button type="button" class="son" aria-pressed="false" aria-label="Musique de l'arène" data-i18n-aria="son">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="hp" d="M3.5 9.5h3.8l4.7-4v13l-4.7-4H3.5z"/><path class="ondes" d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11"/><path class="muet" d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
+    </button>
+    <nav class="langues" aria-label="Langue">
+      <button type="button" data-lang="fr" lang="fr" aria-pressed="true">FR</button>
+      <button type="button" data-lang="en" lang="en" aria-pressed="false">EN</button>
+      <button type="button" data-lang="es" lang="es" aria-pressed="false">ES</button>
+    </nav>
+  </div>
+  <audio class="musique" src="audio/titre.mp3" preload="none" loop></audio>
   <h1 class="cache">HARENA</h1>
   <!-- HARENA grave en or, celui de l'ecran titre (titre C du prototype) : capitales Cinzel taillees en V par un
        eclairage SVG venu du soleil, en haut a droite. Fixe, lisible sans script ; arene.js n'en anime que l'eclat. -->
@@ -134,7 +141,7 @@
   <p>© 2026 Graine Games</p>
 </footer>
 
-<script src="langue.js?v=20261009g"></script>
-<script src="arene.js?v=20261009g"></script>
+<script src="langue.js?v=20261009h"></script>
+<script src="arene.js?v=20261009h"></script>
 </body>
 </html>
