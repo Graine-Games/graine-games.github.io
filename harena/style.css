@@ -113,18 +113,20 @@ h1, h2, h3 { font-family: var(--titre); font-weight: 700; line-height: 1.2; marg
   overflow: hidden;
 }
 .entete::before {
-  /* Plus haut que l'en-tête et calé en bas : le mot HARENA de la capture sort du cadre,
-     et l'invite du bas sous le bord : il ne reste que la foule et le sable. */
-  content: ""; position: absolute; inset: -65% -12px -30%; z-index: -2;
-  background: url("img/captures/titre.jpg") center bottom / cover no-repeat;
-  filter: blur(3px) saturate(.85);
-  opacity: .5;
+  /* Telephone : la porte, son gladiateur et les deux etendards, entiers, poses en bas. */
+  content: ""; position: absolute; inset: 0; z-index: -2;
+  background: url("img/entete-mobile.jpg") center bottom / 100% auto no-repeat;
+}
+@media (max-width: 979px) {
+  /* Le texte au-dessus, la scene en dessous : la hauteur reservee en bas est celle de l'image
+     (900 x 750), pour que ni le bouton ni l'accroche ne se posent sur la porte. */
+  .entete { min-height: 0; justify-content: flex-start; padding-bottom: calc(83.4vw + 8px); }
 }
 .entete::after {
+  /* La nuit descend du haut pour porter le texte, et la scene se fond dans le sable en bas. */
   content: ""; position: absolute; inset: 0; z-index: -1;
   background:
-    radial-gradient(ellipse 70% 45% at 50% 42%, rgba(20, 16, 15, .55) 0%, transparent 100%),
-    linear-gradient(180deg, rgba(20, 16, 15, .55) 0%, rgba(20, 16, 15, .35) 40%, rgba(20, 16, 15, .8) 80%, var(--fond) 100%);
+    linear-gradient(180deg, var(--fond) 0, var(--fond) calc(100% - 83.4vw), rgba(20, 16, 15, 0) calc(100% - 62vw), rgba(20, 16, 15, 0) calc(100% - 10vw), var(--fond) 100%);
 }
 .entete .icone {
   width: 88px; height: 88px; border-radius: 20px;
@@ -283,4 +285,17 @@ h1, h2, h3 { font-family: var(--titre); font-weight: 700; line-height: 1.2; marg
 @media (prefers-reduced-motion: reduce) {
   .bouton { transition: none; }
   .bouton:hover { transform: none; }
+}
+
+/* Ecran large : la scene a droite, le texte a gauche dans la nuit. En fin de feuille, pour
+   l'emporter sur les regles de l'en-tete ecrites plus haut. */
+@media (min-width: 980px) {
+  .entete { align-items: flex-start; text-align: left; padding-left: max(7vw, var(--marge)); }
+  .entete > :not(.langues) { max-width: min(42vw, 620px); }
+  .entete .accroche, .entete .filet-orne { margin-left: 0; }
+  .entete h1, .entete .sous-titre { padding-left: 0; }
+  .entete h1 { font-size: min(8rem, 6.4vw); }
+  .entete > :not(.langues) { max-width: min(38vw, 560px); }
+  .entete::before { background: url("img/entete-large.jpg") right center / 54vw auto no-repeat; }
+  .entete::after { background: linear-gradient(180deg, transparent 75%, var(--fond) 100%); }
 }
