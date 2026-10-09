@@ -26,41 +26,46 @@
     <button type="button" data-lang="en" lang="en" aria-pressed="false">EN</button>
     <button type="button" data-lang="es" lang="es" aria-pressed="false">ES</button>
   </nav>
-  <img class="icone" src="img/harena-256.png" width="88" height="88" alt="">
-  <h1><span class="or-grave">HARENA</span></h1>
-  <p class="sous-titre" data-i18n="sousTitre">Forge ta gloire</p>
-  <div class="filet-orne" aria-hidden="true"><span></span></div>
+  <h1 class="cache">HARENA</h1>
+  <figure class="ecran">
+    <img src="img/entete-titre.jpg" width="1080" height="2150" alt="L'écran titre de HARENA : le colisée, sa foule et un gladiateur à la porte de l'arène" data-i18n-alt="ecranAlt" fetchpriority="high">
+  </figure>
   <p class="accroche" data-i18n="accroche">Fonde ta maison, recrute tes gladiateurs et forge ta gloire dans le sable du colisée.</p>
   <a class="bouton" href="#testeur" data-i18n="cta">Devenir testeur</a>
-  <p class="mention" data-i18n="mention">Sur Android · en test</p>
+  <p class="android">
+    <!-- Le robot Android est reproduit d'apres l'oeuvre creee et partagee par Google, sous licence CC BY 3.0 (credit en page d'informations). -->
+    <svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true" focusable="false"><path fill="#3DDC84" d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85a.637.637 0 0 0-.83.22l-1.88 3.24a11.43 11.43 0 0 0-8.94 0L5.65 5.67a.643.643 0 0 0-.87-.2c-.28.18-.37.54-.22.83L6.4 9.48A10.78 10.78 0 0 0 1 18h22a10.78 10.78 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>
+    <span>Android</span>
+    <span class="cache" data-i18n="mention">Sur Android · en test</span>
+  </p>
 </header>
 
 <main id="jeu">
-  <p class="epigraphe" data-i18n="epigraphe">La foule gronde. Ton étendard flotte au-dessus du sable. Ta maison de gladiateurs entre dans l'arène.</p>
+  <p class="epigraphe" data-i18n="epigraphe">La foule gronde. Ton étendard flotte au-dessus du sable. Tes gladiateurs entrent dans l'arène.</p>
 
   <section class="section" aria-labelledby="titre-jeu">
     <h2 id="titre-jeu" data-i18n="jeuTitre">Ce qui t'attend</h2>
     <div class="filet-orne" aria-hidden="true"><span></span></div>
     <ul class="atouts">
       <li>
-        <h3 data-i18n="maisonTitre">Fonde ta maison</h3>
-        <p data-i18n="maisonTexte">Choisis ton nom, ta province et compose ton étendard : partitions, couleurs, emblème. Il flotte partout où tes gladiateurs combattent.</p>
+        <h3 data-i18n="maisonTitre">Fonde ta maison de gladiateurs</h3>
+        <p data-i18n="maisonTexte">Choisis son nom, sa province de départ et compose ton propre étendard : partitions, couleurs, emblème, c'est ta propre identité que tu crées. Il flottera partout où tes gladiateurs combattent.</p>
       </li>
       <li>
         <h3 data-i18n="routeTitre">De l'Afrique à Rome</h3>
-        <p data-i18n="routeTexte">Vingt-quatre provinces autour de la Méditerranée, de la Maurétanie jusqu'à Rome. Chaque colisée a ses combats, ses maisons rivales et son champion. Gagne des lauriers, bats le champion, ouvre la route.</p>
+        <p data-i18n="routeTexte">Parcours de nombreuses provinces autour de la Méditerranée, de la Maurétanie jusqu'à Rome. Chaque colisée a ses propres combats, ses maisons rivales et son champion. Gagne le cœur de la foule en battant le champion, ouvre la route vers la gloire.</p>
       </li>
       <li>
-        <h3 data-i18n="gladiateursTitre">Soixante-sept gladiateurs</h3>
-        <p data-i18n="gladiateursTexte">Recrute-les, fais-les monter en niveau et choisis les capacités qu'ils emportent au combat. Chacun a son visage, son peuple et son histoire.</p>
+        <h3 data-i18n="gladiateursTitre">Des dizaines de gladiateurs t'attendent</h3>
+        <p data-i18n="gladiateursTexte">Recrute-les, fais-les monter en niveau et choisis les capacités qui les feront exceller au combat. Chacun a son style, son peuple et son histoire.</p>
       </li>
       <li>
-        <h3 data-i18n="cercleTitre">Quatre familles, un cercle</h3>
-        <p data-i18n="cercleTexte">Bouclier, Lame, Lancier, Poursuite : chaque famille en domine une autre. Lis l'équipe adverse, compose la tienne, et retourne le combat.</p>
+        <h3 data-i18n="cercleTitre">Quatre types de gladiateurs</h3>
+        <p data-i18n="cercleTexte">Bouclier, Lame, Lancier, Poursuite : chaque famille en domine une autre. Lis l'équipe adverse, compose la tienne, et retourne le combat en ta faveur.</p>
       </li>
       <li>
-        <h3 data-i18n="combatTitre">Le combat, tour par tour</h3>
-        <p data-i18n="combatTexte">Choisis chaque action, gère l'endurance, place le bon gladiateur face au bon adversaire. Une erreur se paie, une bonne lecture se voit.</p>
+        <h3 data-i18n="combatTitre">À chaque tour de combat, renverse les certitudes</h3>
+        <p data-i18n="combatTexte">Choisis chaque action, gère l'endurance, place le bon gladiateur face au bon adversaire. Une erreur se paie, une bonne lecture remplira ta bourse en or.</p>
       </li>
       <li>
         <h3 data-i18n="libreTitre">Un jeu qui grandit</h3>

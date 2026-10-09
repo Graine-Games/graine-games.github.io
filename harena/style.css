@@ -57,7 +57,8 @@ h1, h2, h3 { font-family: var(--titre); font-weight: 700; line-height: 1.2; marg
 /* Le sélecteur de langue : trois mots, discrets, en haut à droite. */
 .langues {
   position: absolute; top: 12px; right: var(--marge); z-index: 5;
-  display: flex; gap: 2px;
+  display: flex; gap: 2px; padding: 2px 6px; border-radius: 999px;
+  background: rgba(20, 16, 15, .6); backdrop-filter: blur(6px);
 }
 .langues button {
   font: 600 .8125rem/1 var(--titre); letter-spacing: .12em;
@@ -102,53 +103,55 @@ h1, h2, h3 { font-family: var(--titre); font-weight: 700; line-height: 1.2; marg
 }
 .bouton:hover { color: #1A120C; filter: brightness(1.08); transform: translateY(-1px); }
 
-/* ---------- En-tête plein écran ---------- */
+/* ---------- En-tête : l'écran titre du jeu, tel que le joueur le voit ---------- */
+.cache {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
 .entete {
-  position: relative; isolation: isolate;
-  min-height: 100vh; min-height: 100svh;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  text-align: center; padding: 72px var(--marge) 56px;
-  /* Repli : la nuit de la charte, sans l'écran titre. */
-  background: radial-gradient(ellipse 90% 60% at 50% 38%, #2C211C 0%, var(--fond) 72%);
-  overflow: hidden;
+  position: relative; isolation: isolate; overflow: hidden;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  padding: 0 var(--marge) 64px;
 }
-.entete::before {
-  /* Telephone : la porte, son gladiateur et les deux etendards, entiers, poses en bas. */
-  content: ""; position: absolute; inset: 0; z-index: -2;
-  background: url("img/entete-mobile.jpg") center bottom / 100% auto no-repeat;
-}
-@media (max-width: 979px) {
-  /* Le texte au-dessus, la scene en dessous : la hauteur reservee en bas est celle de l'image
-     (900 x 750), pour que ni le bouton ni l'accroche ne se posent sur la porte. */
-  .entete { min-height: 0; justify-content: flex-start; padding-bottom: calc(83.4vw + 8px); }
-}
-.entete::after {
-  /* La nuit descend du haut pour porter le texte, et la scene se fond dans le sable en bas. */
-  content: ""; position: absolute; inset: 0; z-index: -1;
-  background:
-    linear-gradient(180deg, var(--fond) 0, var(--fond) calc(100% - 83.4vw), rgba(20, 16, 15, 0) calc(100% - 62vw), rgba(20, 16, 15, 0) calc(100% - 10vw), var(--fond) 100%);
-}
-.entete .icone {
-  width: 88px; height: 88px; border-radius: 20px;
-  border: 1px solid rgba(240, 210, 122, .45);
-  box-shadow: 0 10px 34px rgba(0, 0, 0, .7), 0 0 40px rgba(201, 162, 74, .15);
-  margin-bottom: 28px;
-}
-.entete h1 {
-  font-size: clamp(3.25rem, 17vw, 8rem); font-weight: 900;
-  letter-spacing: .08em; padding-left: .08em; line-height: 1;
-}
-.entete .sous-titre {
-  font: 700 .8125rem/1.4 var(--titre); letter-spacing: .38em; padding-left: .38em;
-  text-transform: uppercase; color: var(--bronze); margin: 18px 0 0;
+/* Téléphone : l'écran titre occupe toute la largeur, et le sable se fond dans la nuit. */
+.entete .ecran { position: relative; margin: 0 calc(-1 * var(--marge)); width: 100vw; }
+.entete .ecran img { display: block; width: 100%; height: auto; }
+.entete .ecran::after {
+  content: ""; position: absolute; inset: auto 0 0; height: 22%;
+  background: linear-gradient(180deg, transparent, var(--fond));
 }
 .entete .accroche {
-  max-width: 30rem; margin: 0 auto 32px;
+  max-width: 30rem; margin: -8px auto 30px;
   font-size: 1.1875rem; font-style: italic;
-  text-shadow: 0 1px 8px rgba(0, 0, 0, .8);
 }
-.entete .mention {
-  margin: 22px 0 0; color: var(--sourdine); font-size: .9375rem;
+.entete .android {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin: 26px 0 0; font: 700 1rem/1 var(--titre); letter-spacing: .12em; color: var(--texte);
+}
+/* Écran large : l'écran titre au centre, dans un cadre de téléphone, sur son propre décor
+   flouté qui déborde jusqu'aux bords. */
+@media (min-width: 760px) {
+  .entete { padding-top: 48px; }
+  .entete .ecran { margin-bottom: 32px; }
+  .entete::before {
+    content: ""; position: absolute; inset: -40px; z-index: -2;
+    background: url("img/entete-titre.jpg") center 70% / cover no-repeat;
+    filter: blur(30px) saturate(1.15); opacity: .85;
+  }
+  .entete::after {
+    content: ""; position: absolute; inset: 0; z-index: -1;
+    background: radial-gradient(ellipse 55% 65% at 50% 40%, rgba(20, 16, 15, 0), rgba(20, 16, 15, .7) 80%),
+                linear-gradient(180deg, transparent 70%, var(--fond));
+  }
+  .entete .ecran {
+    width: auto; margin: 0 0 40px;
+    padding: 12px; border-radius: 44px;
+    background: linear-gradient(160deg, #3A302B, #1C1614 60%);
+    box-shadow: 0 0 0 1px rgba(240, 210, 122, .25), 0 30px 80px rgba(0, 0, 0, .7), 0 0 120px rgba(201, 162, 74, .12);
+  }
+  .entete .ecran img { height: min(62vh, 700px); width: auto; border-radius: 32px; }
+  .entete .ecran::after { content: none; }
+  .entete .accroche { margin-top: 0; }
 }
 
 /* ---------- Sections ---------- */
@@ -287,15 +290,8 @@ h1, h2, h3 { font-family: var(--titre); font-weight: 700; line-height: 1.2; marg
   .bouton:hover { transform: none; }
 }
 
-/* Ecran large : la scene a droite, le texte a gauche dans la nuit. En fin de feuille, pour
-   l'emporter sur les regles de l'en-tete ecrites plus haut. */
-@media (min-width: 980px) {
-  .entete { align-items: flex-start; text-align: left; padding-left: max(7vw, var(--marge)); }
-  .entete > :not(.langues) { max-width: min(42vw, 620px); }
-  .entete .accroche, .entete .filet-orne { margin-left: 0; }
-  .entete h1, .entete .sous-titre { padding-left: 0; }
-  .entete h1 { font-size: min(8rem, 6.4vw); }
-  .entete > :not(.langues) { max-width: min(38vw, 560px); }
-  .entete::before { background: url("img/entete-large.jpg") right center / 54vw auto no-repeat; }
-  .entete::after { background: linear-gradient(180deg, transparent 75%, var(--fond) 100%); }
-}
+
+/* Listes de la page d informations. */
+.texte ul { padding-left: 1.2em; margin: 8px 0 16px; }
+.texte li { margin: 6px 0; }
+.texte li::marker { color: var(--bronze); }
