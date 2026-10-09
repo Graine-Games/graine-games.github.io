@@ -116,7 +116,7 @@ h1, h2, h3 { font-family: var(--titre); font-weight: 700; line-height: 1.2; marg
   /* Plus haut que l'en-tête et calé en bas : le mot HARENA de la capture sort du cadre,
      et l'invite du bas sous le bord : il ne reste que la foule et le sable. */
   content: ""; position: absolute; inset: -65% -12px -30%; z-index: -2;
-  background: url("img/captures/titre.png") center bottom / cover no-repeat;
+  background: url("img/captures/titre.jpg") center bottom / cover no-repeat;
   filter: blur(3px) saturate(.85);
   opacity: .5;
 }
