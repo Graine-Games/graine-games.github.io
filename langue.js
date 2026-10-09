@@ -7,10 +7,10 @@
 
   var T = {
     en: {
-      titre: 'HARENA — Gladiator Arena',
+      titre: 'HARENA — Forge Your Glory',
       evitement: 'Skip to content',
-      sousTitre: 'Gladiator Arena',
-      accroche: 'Found your house of gladiators and conquer the arenas, from Africa to Rome.',
+      sousTitre: 'Forge Your Glory',
+      accroche: 'Found your house, recruit your gladiators and forge your glory in the sand of the colosseum.',
       cta: 'Become a tester',
       mention: 'On Android · in testing',
       epigraphe: 'The crowd roars. Your banner flies above the sand. Your house of gladiators steps into the arena.',
@@ -63,10 +63,10 @@
       creditsTexte: 'Heading typeface: Cinzel, © The Cinzel Project Authors, under the SIL Open Font License 1.1 (<a href="' + OFL + '">licence text</a>).'
     },
     es: {
-      titre: 'HARENA — Arena de gladiadores',
+      titre: 'HARENA — Forja tu gloria',
       evitement: 'Ir al contenido',
-      sousTitre: 'Arena de gladiadores',
-      accroche: 'Funda tu casa de gladiadores y conquista las arenas, de África a Roma.',
+      sousTitre: 'Forja tu gloria',
+      accroche: 'Funda tu casa, recluta a tus gladiadores y forja tu gloria en la arena del coliseo.',
       cta: 'Hazte probador',
       mention: 'En Android · en pruebas',
       epigraphe: 'La multitud ruge. Tu estandarte ondea sobre la arena. Tu casa de gladiadores entra en el combate.',
