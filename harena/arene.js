@@ -155,6 +155,100 @@
   // le vent : des rafales lentes et irregulieres, deux etendards jamais ensemble
   const rafale = (tr, ph) => .55 + .45 * (.5 + .5 * Math.sin(tr * .23 + ph)) * (.6 + .4 * Math.sin(tr * .071 + ph * 1.7));
 
+  // ---------------------------------------------------------------- le ciel au GPU
+  // Le ciel du jeu (harena/shaders/ciel.frag, passe 0) porte en GLSL ES 1.00 : un fragment par pixel de l'ecran,
+  // donc des bords de nuage nets a toute resolution. Coordonnees du jeu (soleil en 250, 15 ; nuages sur y 0..288),
+  // recentrees : uDx decale la scene pour que la composition reste ancree au centre ; en x le ciel n'a plus de bord.
+  const SHADER_CIEL = `
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+uniform float uK, uHaut, uDx, uHistoire, uCouv;
+const vec2 SOLEIL = vec2(250.0, 15.0);
+float hash(vec2 p) { vec3 p3 = fract(vec3(p.xyx) * 0.1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
+float grad(vec2 i, vec2 f) { float h = floor(hash(i) * 4.0); return (mod(h, 2.0) >= 1.0 ? f.x : -f.x) + (h >= 2.0 ? f.y : -f.y); }
+float perlin(vec2 p) {
+  vec2 i = floor(p), f = p - i, u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
+  float n0 = mix(grad(i, f), grad(i + vec2(1.0, 0.0), f - vec2(1.0, 0.0)), u.x);
+  float n1 = mix(grad(i + vec2(0.0, 1.0), f - vec2(0.0, 1.0)), grad(i + vec2(1.0, 1.0), f - vec2(1.0, 1.0)), u.x);
+  return mix(n0, n1, u.y);
+}
+float fbm4(vec2 p) { float s = 0.0, a = 0.5, f = 1.0; for (int o = 0; o < 4; o++) { s += a * perlin(p * f); f *= 2.03; a *= 0.5; } return s; }
+float fbm3(vec2 p) { float s = 0.0, a = 0.5, f = 1.0; for (int o = 0; o < 3; o++) { s += a * perlin(p * f); f *= 2.03; a *= 0.5; } return s; }
+bool horsDuCiel(vec2 p) { return p.y < 0.0 || p.y >= 288.0; }
+vec3 cumulus(vec2 p) {
+  float hor = p.y / 288.0;
+  float rc = fbm4(vec2(p.x / (104.0 - 52.0 * hor) + uHistoire * 0.035, p.y / (64.0 - 36.0 * hor) + uHistoire * 0.004)) + 0.05 * hor - 0.12;
+  float dc = smoothstep(0.0, 0.11, rc), rf = 0.0, df = 0.0;
+  if (hor > 0.5) { rf = fbm3(vec2(p.x / 80.0 + uHistoire * 0.07 + 31.0, p.y / 40.0 + 4.7)) - 0.24; df = smoothstep(0.0, 0.1, rf) * smoothstep(0.5, 0.74, hor); }
+  return vec3(max(min(1.0, rc * 3.2) * dc, min(1.0, rf * 3.4) * df), dc, df);
+}
+float densite(vec2 p) { return horsDuCiel(p) ? 0.0 : cumulus(p).x; }
+float couverture(vec3 c, vec2 p) {
+  float di = smoothstep(0.16, 0.5, fbm3(vec2(p.x / 240.0 + uHistoire * 0.01, p.y / 26.0 + 7.3))) * 0.22 * (1.0 - p.y / 288.0);
+  return 1.0 - (1.0 - c.y) * (1.0 - c.z) * (1.0 - di);
+}
+vec4 degrade(float r, vec4 a, vec4 b, float r0, float r1) { return mix(a, b, clamp((r - r0) / (r1 - r0), 0.0, 1.0)); }
+vec3 ciel(vec2 p) {
+  float soleil = 1.0 - uCouv, k = clamp(p.y / 290.0, 0.0, 1.0);
+  vec3 c = k < 0.55 ? mix(vec3(0.114, 0.353, 0.659), vec3(0.247, 0.525, 0.8), k / 0.55)
+         : k < 0.88 ? mix(vec3(0.247, 0.525, 0.8), vec3(0.471, 0.675, 0.855), (k - 0.55) / 0.33)
+         : mix(vec3(0.471, 0.675, 0.855), vec3(0.576, 0.729, 0.863), (k - 0.88) / 0.12);
+  float dist = length(p - SOLEIL), r = dist / 150.0;
+  vec4 h0 = vec4(1.0, 0.984, 0.902, 0.95), h1 = vec4(1.0, 0.957, 0.8, 0.85 * (0.4 + 0.6 * soleil));
+  vec4 h2 = vec4(1.0, 0.914, 0.69, 0.42 * (0.3 + 0.7 * soleil)), h3 = vec4(1.0, 0.941, 0.824, 0.0);
+  vec4 h = r < 0.08 ? degrade(r, h0, h1, 0.0, 0.08) : r < 0.25 ? degrade(r, h1, h2, 0.08, 0.25) : degrade(r, h2, h3, 0.25, 1.0);
+  c = mix(c, h.rgb, h.a);
+  c = mix(c, vec3(1.0, 0.992, 0.957), 1.0 - smoothstep(11.5, 12.5, dist));
+  if (p.y < 288.0) {
+    vec3 cu = cumulus(p);
+    float a = couverture(cu, p);
+    if (a > 0.004) {
+      vec2 u = (SOLEIL - p) / max(dist, 1.0);
+      float occl = 0.0;
+      for (int s = 1; s <= 4; s++) { occl += densite(p + u * float(s) * 6.8); }
+      float lum = exp(-0.55 * occl), epais = cu.x, pres = exp(-dist / 110.0);
+      float haut = densite(p - vec2(0.0, 8.0)), bas = densite(p + vec2(0.0, 8.0));
+      float ombre = clamp((1.0 - lum) * 0.95 + 0.4 * max(0.0, haut - bas) - 0.3 * max(0.0, bas - haut) + 0.18 * epais, 0.0, 1.0);
+      vec3 n = mix(vec3(1.0, 0.98, 0.949), vec3(0.478, 0.541, 0.651), ombre);
+      n = mix(n, vec3(1.0, 0.878, 0.659), 0.28 * pres);
+      n = min(vec3(1.0), n + vec3(0.314, 0.29, 0.235) * 4.0 * epais * (1.0 - epais) * pres * lum);
+      c = mix(c, n, a);
+    }
+  }
+  vec3 b = vec3(1.0, 0.965, 0.839) * 0.75 * soleil * (1.0 - clamp(dist / 70.0, 0.0, 1.0));
+  return 1.0 - (1.0 - c) * (1.0 - b);
+}
+void main() { gl_FragColor = vec4(ciel(vec2(gl_FragCoord.x, uHaut - gl_FragCoord.y) / uK - vec2(uDx, 0.0)), 1.0); }`;
+  let sansGL = false;                                                 // une fois le contexte perdu, le ciel repasse au canvas
+  // Un canvas WebGL qui remplace celui du ciel, ou null (pas de WebGL, shader refuse) : le canvas 2D reste alors.
+  function cielGL(ancien) {
+    if (sansGL) return null;
+    const cv = document.createElement('canvas');
+    const gl = cv.getContext('webgl', { alpha: false, antialias: false, depth: false, stencil: false });
+    if (!gl) return null;
+    const etage = (type, src) => { const o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o); return gl.getShaderParameter(o, gl.COMPILE_STATUS) ? o : null; };
+    const vs = etage(gl.VERTEX_SHADER, 'attribute vec2 a; void main() { gl_Position = vec4(a, 0.0, 1.0); }'), fs = etage(gl.FRAGMENT_SHADER, SHADER_CIEL);
+    if (!vs || !fs) return null;
+    const pr = gl.createProgram(); gl.attachShader(pr, vs); gl.attachShader(pr, fs); gl.linkProgram(pr);
+    if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) return null;
+    gl.useProgram(pr);
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);   // un triangle qui couvre tout
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+    const u = {}; for (const n of ['uK', 'uHaut', 'uDx', 'uHistoire', 'uCouv']) u[n] = gl.getUniformLocation(pr, n);
+    cv.className = ancien.className; ancien.replaceWith(cv);
+    cv.addEventListener('webglcontextlost', e => { e.preventDefault(); sansGL = true; cle = ''; refaire(); });
+    return { cv, dessiner(K, dx, histoire, couverture) {
+      gl.viewport(0, 0, cv.width, cv.height);
+      gl.uniform1f(u.uK, K); gl.uniform1f(u.uHaut, cv.height); gl.uniform1f(u.uDx, dx);
+      gl.uniform1f(u.uHistoire, histoire); gl.uniform1f(u.uCouv, couverture);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    } };
+  }
+
   // ---------------------------------------------------------------- la scene, construite pour un format
   let couv = 0;                                                       // la couverture du soleil, de 0 a 1
   function construire(W, H, T) {
@@ -303,11 +397,11 @@
       <div class="lumiere voile"></div><div class="lumiere diffus"></div><div class="lumiere chaleur"></div>`;
     const [cvC, cvF, cvA, cvO, cvR] = scene.querySelectorAll('canvas');
     // Chaque canvas ne couvre que sa bande utile (y0 a y1, en unites de la scene) : moins de pixels a recomposer.
-    const toile = (cv, y0, y1, k = K) => {
+    const poser = (cv, y0, y1, k = K) => {
       cv.width = Math.ceil(L * k); cv.height = Math.ceil((y1 - y0) * k);
       cv.style.top = (y0 / HL * 100).toFixed(3) + '%'; cv.style.height = ((y1 - y0) / HL * 100).toFixed(3) + '%';
-      return cv.getContext('2d');
     };
+    const toile = (cv, y0, y1, k) => { poser(cv, y0, y1, k); return cv.getContext('2d'); };
     const [voile, diffus, chaleur] = scene.querySelectorAll('.lumiere');
 
     // ------------------------------------------------------------ le ciel vivant
@@ -317,23 +411,27 @@
     // bornees (60 000 cases de ciel, 5 000 de rais, 6 000 d'ombres) et le bruit se calcule en trois tranches.
     const ciel = (() => {
       const HC = 236 + DECALE + 19;                                   // jusque sous l'attique, au plus bas au centre
-      const CASE = Math.max(2.5, 3 / s, Math.sqrt(L * HC / 60000)), GL = Math.ceil(L / CASE), GH = Math.ceil(HC / CASE);
+      // Au GPU, le shader dessine les nuages ; la grille JS, grossiere, ne sert plus qu'a la lumiere (couverture du
+      // soleil, rais, voile). Sans WebGL, la grille fine dessine aussi le ciel au canvas, comme en v2.
+      const gpu = cielGL(cvC);
+      const CASE = gpu ? Math.max(6, Math.sqrt(L * HC / 6000)) : Math.max(2.5, 3 / s, Math.sqrt(L * HC / 60000)), GL = Math.ceil(L / CASE), GH = Math.ceil(HC / CASE);
       const SOL = [cx + 70, 15];
-      const perm = new Uint8Array(512);
-      { const p = [...Array(256).keys()]; for (let i = 255; i > 0; i--) { const j = (alea() * (i + 1)) | 0; [p[i], p[j]] = [p[j], p[i]]; } for (let i = 0; i < 512; i++) perm[i] = p[i & 255]; }
-      const fondu = t => t * t * t * (t * (t * 6 - 15) + 10);
+      for (let i = 0; i < 255; i++) alea();                              // les tirages de l'ancienne table : la foule reste la meme
+      // le bruit du jeu (ciel_vivant.dart, ciel.frag) : gradients de Perlin tires d'un hachage, le meme que le shader
+      const fract = x => x - Math.floor(x);
+      const hash = (x, y) => { let a = fract(x * .1031), b = fract(y * .1031), c = a; const d = a * (b + 33.33) + b * (c + 33.33) + c * (a + 33.33); a += d; b += d; c += d; return fract((a + b) * c); };
+      const grad = (ix, iy, fx, fy) => { const h = Math.floor(hash(ix, iy) * 4); return ((h & 1) ? fx : -fx) + ((h & 2) ? fy : -fy); };
       const perlin = (x, y) => {
-        const xi = Math.floor(x), yi = Math.floor(y), X = xi & 255, Yi = yi & 255; x -= xi; y -= yi;
-        const u = fondu(x), v = fondu(y), g = (hh, p, q) => ((hh & 1) ? p : -p) + ((hh & 2) ? q : -q);
-        const pa = perm[X] + Yi, pb = perm[X + 1] + Yi;
-        const n0 = g(perm[pa], x, y) + u * (g(perm[pb], x - 1, y) - g(perm[pa], x, y));
-        const n1 = g(perm[pa + 1], x, y - 1) + u * (g(perm[pb + 1], x - 1, y - 1) - g(perm[pa + 1], x, y - 1));
+        const ix = Math.floor(x), iy = Math.floor(y), fx = x - ix, fy = y - iy;
+        const u = fx * fx * fx * (fx * (fx * 6 - 15) + 10), v = fy * fy * fy * (fy * (fy * 6 - 15) + 10);
+        const g00 = grad(ix, iy, fx, fy), g01 = grad(ix, iy + 1, fx, fy - 1);
+        const n0 = g00 + u * (grad(ix + 1, iy, fx - 1, fy) - g00), n1 = g01 + u * (grad(ix + 1, iy + 1, fx - 1, fy - 1) - g01);
         return n0 + v * (n1 - n0);
       };
       const fbm = (x, y, oct) => { let sm = 0, am = .5, fr = 1; for (let o = 0; o < oct; o++) { sm += am * perlin(x * fr, y * fr); fr *= 2.03; am *= .5; } return sm; };
-      const g = toile(cvC, 0, HC);
-      const fond = g.createLinearGradient(0, 0, 0, 290);
-      fond.addColorStop(0, '#1d5aa8'); fond.addColorStop(.55, '#3f86cc'); fond.addColorStop(.88, '#78acda'); fond.addColorStop(1, '#93badc');
+      const g = gpu ? (poser(gpu.cv, 0, HC), null) : toile(cvC, 0, HC);
+      const fond = g && g.createLinearGradient(0, 0, 0, 290);
+      if (g) { fond.addColorStop(0, '#1d5aa8'); fond.addColorStop(.55, '#3f86cc'); fond.addColorStop(.88, '#78acda'); fond.addColorStop(1, '#93badc'); }
       const bas = document.createElement('canvas'); bas.width = GL; bas.height = GH;
       const bg = bas.getContext('2d'), img = bg.createImageData(GL, GH);
       const dens = new Float32Array(GL * GH), alpha = new Float32Array(GL * GH);
@@ -355,7 +453,7 @@
             const x = (i + .5) * CASE - dx, k = j * GL + i;
             // cumulus : gros au-dessus de nous, plus petits et aplatis vers l'horizon
             const sx = 104 - 52 * hor, sy = 64 - 36 * hor, nc = fbm(x / sx + tr * .035, y / sy + tr * .004, 4);
-            const rc = nc + .05 * hor - .075, dc = lisse(0, .11, rc);
+            const rc = nc + .05 * hor - .12, dc = lisse(0, .11, rc);   // le seuil du jeu
             const nf = hor > .5 ? fbm(x / 80 + tr * .07 + 31, y / 40 + 4.7, 3) : 0, rf = nf - .24, df = lisse(0, .1, rf) * lisse(.5, .74, hor);
             const ni = fbm(x / 240 + tr * .01, y / 26 + 7.3, 3), di = lisse(.16, .5, ni) * .22 * (1 - hor);   // cirrus
             dens[k] = Math.max(Math.min(1, rc * 3.2) * dc, Math.min(1, rf * 3.4) * df);
@@ -434,14 +532,20 @@
       }
       let pas = -1, etape = 7, trB = 0, forceRais = 0, forceOmbres = 1;
       const tranche = e => [Math.floor(GH * e / 4), Math.floor(GH * (e + 1) / 4)];
+      // le shader a chaque image ; au-dela de 1,6 million de pixels de ciel (2560 x 1440 a densite 2) une image sur
+      // deux, au-dela de 3,2 millions une sur trois : les nuages y avancent de moins d'un pixel par pas
+      const pixels = gpu ? gpu.cv.width * gpu.cv.height : 0, rythmeGPU = pixels < 1.6e6 ? 1 : pixels < 3.2e6 ? 2 : 3;
+      let image = 0;
       return (tr, tout) => {
-        // le ciel commence 25 s plus loin dans son histoire : l'arene arrive au soleil, le premier voile
-        // tombe vers 20 s, le soleil ressort avec ses rais vers 46 s
-        tr = calme ? 30 : tr + 25;
+        // l'horloge des nuages du jeu : elle part de 629 s, le premier voile tombe vers 21 s, le soleil ressort vers
+        // 44 s ; en mouvement reduit, le ciel fige du jeu (634 s, au soleil)
+        tr = calme ? 634 : tr + 629;
+        image++;
+        if (gpu && !tout && image % rythmeGPU === 0) gpu.dessiner(K, dx, tr, couv);
         // le bruit se recalcule 10 fois par seconde (les nuages derivent de moins d'une unite par pas) ; le travail
         // se repartit sur sept images : quatre tranches de bruit, la lumiere des nuages, les rais, les ombres
         const q = Math.floor(tr * 10);
-        if (tout) { trB = tr; bruit(tr, 0, GH); composer(true); pas = q; etape = 7; return; }
+        if (tout) { trB = tr; bruit(tr, 0, GH); composer(true); if (gpu) gpu.dessiner(K, dx, tr, couv); pas = q; etape = 7; return; }
         if (etape >= 7) { if (q === pas) return; pas = q; etape = 0; trB = tr; }
         if (etape < 4) bruit(trB, ...tranche(etape));
         else if (etape === 4) composer(false);
@@ -451,11 +555,12 @@
       };
       function composer(tout) {
         const tr = trB;
-        eclairer();
+        if (!gpu) eclairer();
         const c = couverture(), dt = Math.max(0, tr - dernier); dernier = tr;
         lisseCouv = lisseCouv < 0 || calme ? c : lisseCouv + (c - lisseCouv) * Math.min(1, dt / .9);
         couv = lisseCouv;
         const soleil = 1 - couv;
+        if (g) {
         g.setTransform(K, 0, 0, K, 0, 0); g.fillStyle = fond; g.fillRect(0, 0, L, HC);
         const halo = g.createRadialGradient(SOL[0], SOL[1], 0, SOL[0], SOL[1], 150);
         halo.addColorStop(0, 'rgba(255,251,230,.95)'); halo.addColorStop(.08, `rgba(255,244,204,${(.85 * (.4 + .6 * soleil)).toFixed(3)})`);
@@ -469,6 +574,7 @@
         const bloom = g.createRadialGradient(SOL[0], SOL[1], 0, SOL[0], SOL[1], 70);
         bloom.addColorStop(0, `rgba(255,246,214,${(.75 * soleil).toFixed(3)})`); bloom.addColorStop(1, 'rgba(255,246,214,0)');
         g.fillStyle = bloom; g.fillRect(0, 0, L, HC); g.globalCompositeOperation = 'source-over';
+        }
         // a l'ombre la scene est plus sombre, plus froide, plus diffuse ; au soleil, chaude
         for (const [el, o] of [[voile, couv], [diffus, couv * .28], [chaleur, soleil * .5]]) {   // un calque eteint ne se compose plus
           el.style.opacity = o.toFixed(3); el.style.visibility = o < .01 ? 'hidden' : '';
