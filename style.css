@@ -1,0 +1,286 @@
+/* La charte de HARENA, reprise de lib/ui/theme/charte.dart. Mono-thème sombre, comme le jeu. */
+@font-face {
+  font-family: "Cinzel";
+  src: url("fonts/Cinzel.ttf") format("truetype");
+  font-weight: 400 900;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: dark;
+  --fond: #14100F;
+  --panneau: #1F1917;
+  --panneau-haut: #241D1A;
+  --panneau-bas: #1C1614;
+  --creux: #0F0B0A;
+  --filet: #3A302B;
+  --filet-appuye: #4A3D34;
+  --texte: #E9DCC4;
+  --sourdine: #A1917A;
+  --sang: #A8321F;
+  --sang-vif: #CC4326;
+  --bronze: #C9A24A;
+  --bronze-eteint: #8A7233;
+  --or: #F0D27A;
+  --or-grave: linear-gradient(180deg, #FFF6D2 0%, #F5DA8A 24%, #E0B95E 47%, #A8792B 53%, #C89A45 72%, #E2BC68 88%, #8E6526 100%);
+  --titre: "Cinzel", "Trajan Pro", "Times New Roman", serif;
+  --courant: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Noto Serif", "Droid Serif", serif;
+  --marge: 16px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--fond);
+  color: var(--texte);
+  font: 1.0625rem/1.65 var(--courant);
+  overflow-x: hidden;
+}
+
+img { max-width: 100%; display: block; }
+
+a { color: var(--or); text-underline-offset: .2em; text-decoration-thickness: 1px; }
+a:hover { color: #FFF1C2; }
+:focus-visible { outline: 2px solid var(--or); outline-offset: 3px; border-radius: 2px; }
+
+h1, h2, h3 { font-family: var(--titre); font-weight: 700; line-height: 1.2; margin: 0; }
+
+.lien-evitement {
+  position: absolute; left: var(--marge); top: -100px; z-index: 10;
+  background: var(--panneau); padding: 8px 12px; border: 1px solid var(--bronze);
+}
+.lien-evitement:focus { top: var(--marge); }
+
+/* Le sélecteur de langue : trois mots, discrets, en haut à droite. */
+.langues {
+  position: absolute; top: 12px; right: var(--marge); z-index: 5;
+  display: flex; gap: 2px;
+}
+.langues button {
+  font: 600 .8125rem/1 var(--titre); letter-spacing: .12em;
+  color: var(--sourdine); background: none; border: 0; cursor: pointer;
+  padding: 10px 8px; min-width: 44px; min-height: 44px;
+}
+.langues button:hover { color: var(--texte); }
+.langues button[aria-pressed="true"] { color: var(--or); text-decoration: underline 1px; text-underline-offset: 6px; }
+
+/* Le mot doré, comme sur l'écran titre. */
+.or-grave {
+  color: var(--or);
+  background: var(--or-grave);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 0 rgba(40, 20, 6, .9)) drop-shadow(0 0 18px rgba(240, 190, 90, .18));
+}
+
+/* Le filet orné : deux traits qui s'effacent autour d'un losange. */
+.filet-orne {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  margin: 20px auto; max-width: 260px;
+}
+.filet-orne::before, .filet-orne::after {
+  content: ""; flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--bronze));
+}
+.filet-orne::after { background: linear-gradient(270deg, transparent, var(--bronze)); }
+.filet-orne span {
+  width: 7px; height: 7px; transform: rotate(45deg);
+  background: var(--bronze); box-shadow: 0 0 10px rgba(201, 162, 74, .5);
+}
+
+.bouton {
+  display: inline-block; text-decoration: none;
+  font: 700 .9375rem/1 var(--titre); letter-spacing: .16em;
+  color: #1A120C; padding: 17px 28px; border-radius: 3px;
+  background: linear-gradient(#E3C46E, #B48A36);
+  border: 1px solid #F0D27A;
+  box-shadow: 0 1px 0 rgba(255, 246, 210, .5) inset, 0 6px 22px rgba(0, 0, 0, .55);
+  transition: filter .15s, transform .15s;
+}
+.bouton:hover { color: #1A120C; filter: brightness(1.08); transform: translateY(-1px); }
+
+/* ---------- En-tête plein écran ---------- */
+.entete {
+  position: relative; isolation: isolate;
+  min-height: 100vh; min-height: 100svh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 72px var(--marge) 56px;
+  /* Repli : la nuit de la charte, sans l'écran titre. */
+  background: radial-gradient(ellipse 90% 60% at 50% 38%, #2C211C 0%, var(--fond) 72%);
+  overflow: hidden;
+}
+.entete::before {
+  /* Plus haut que l'en-tête et calé en bas : le mot HARENA de la capture sort du cadre,
+     et l'invite du bas sous le bord : il ne reste que la foule et le sable. */
+  content: ""; position: absolute; inset: -65% -12px -30%; z-index: -2;
+  background: url("img/captures/titre.png") center bottom / cover no-repeat;
+  filter: blur(3px) saturate(.85);
+  opacity: .5;
+}
+.entete::after {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background:
+    radial-gradient(ellipse 70% 45% at 50% 42%, rgba(20, 16, 15, .55) 0%, transparent 100%),
+    linear-gradient(180deg, rgba(20, 16, 15, .55) 0%, rgba(20, 16, 15, .35) 40%, rgba(20, 16, 15, .8) 80%, var(--fond) 100%);
+}
+.entete .icone {
+  width: 88px; height: 88px; border-radius: 20px;
+  border: 1px solid rgba(240, 210, 122, .45);
+  box-shadow: 0 10px 34px rgba(0, 0, 0, .7), 0 0 40px rgba(201, 162, 74, .15);
+  margin-bottom: 28px;
+}
+.entete h1 {
+  font-size: clamp(3.25rem, 17vw, 8rem); font-weight: 900;
+  letter-spacing: .08em; padding-left: .08em; line-height: 1;
+}
+.entete .sous-titre {
+  font: 700 .8125rem/1.4 var(--titre); letter-spacing: .38em; padding-left: .38em;
+  text-transform: uppercase; color: var(--bronze); margin: 18px 0 0;
+}
+.entete .accroche {
+  max-width: 30rem; margin: 0 auto 32px;
+  font-size: 1.1875rem; font-style: italic;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, .8);
+}
+.entete .mention {
+  margin: 22px 0 0; color: var(--sourdine); font-size: .9375rem;
+}
+
+/* ---------- Sections ---------- */
+.section { padding: 72px var(--marge); max-width: 1120px; margin: 0 auto; }
+.section > h2 {
+  text-align: center; font-size: clamp(1.625rem, 6vw, 2.25rem);
+  letter-spacing: .06em; color: var(--texte);
+}
+.section > .chapeau {
+  text-align: center; color: var(--sourdine); font-style: italic;
+  max-width: 34rem; margin: 0 auto 40px;
+}
+
+.epigraphe {
+  max-width: 36rem; margin: 0 auto; padding: 8px var(--marge) 0;
+  text-align: center; font-size: clamp(1.25rem, 4.6vw, 1.5rem); font-style: italic; line-height: 1.5;
+  color: var(--texte);
+}
+
+.atouts {
+  list-style: none; padding: 0; margin: 0;
+  display: grid; gap: 16px; grid-template-columns: 1fr;
+}
+.atouts li {
+  position: relative;
+  background: linear-gradient(180deg, var(--panneau-haut), var(--panneau-bas));
+  border: 1px solid var(--filet);
+  border-radius: 4px;
+  padding: 26px 22px 24px;
+}
+.atouts li::before {
+  /* Le liseré de bronze en tête de panneau. */
+  content: ""; position: absolute; left: 22px; right: 22px; top: -1px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--bronze), transparent);
+}
+.atouts h3 {
+  font-size: 1.1875rem; letter-spacing: .06em; color: var(--or); margin-bottom: 10px;
+}
+.atouts p { margin: 0; color: var(--texte); }
+
+/* ---------- Galerie ---------- */
+.piste {
+  display: flex; gap: 16px; list-style: none; padding: 4px var(--marge) 20px; margin: 0 calc(-1 * var(--marge));
+  overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: var(--filet) transparent;
+}
+.piste > :first-child { margin-left: auto; }
+.piste > :last-child { margin-right: auto; }
+.piste > li { flex: 0 0 min(62vw, 240px); scroll-snap-align: center; }
+.piste figure { margin: 0; }
+.piste .cadre {
+  aspect-ratio: 1080 / 2400; border-radius: 18px; overflow: hidden;
+  border: 1px solid var(--filet-appuye);
+  background: radial-gradient(circle at 50% 45%, var(--panneau-haut), var(--creux) 75%);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, .6), 0 0 0 4px var(--creux);
+}
+.piste .cadre { position: relative; }
+.piste .cadre::before {
+  /* Le sceau du jeu, en filigrane, tant que la capture n'a pas chargé. */
+  content: ""; position: absolute; inset: 0;
+  background: url("img/harena-256.png") center / 64px no-repeat;
+  opacity: .14;
+}
+.piste img { position: relative; width: 100%; height: 100%; object-fit: cover; }
+.piste figcaption {
+  font: 600 .8125rem/1.3 var(--titre); letter-spacing: .14em; text-transform: uppercase;
+  color: var(--sourdine); text-align: center; margin-top: 14px;
+}
+/* Une capture absente retire son cadre ; sans aucune capture, la galerie s'efface. */
+.piste li[hidden] { display: none; }
+.galerie:not(:has(.piste li:not([hidden]))) { display: none; }
+
+/* ---------- Devenir testeur ---------- */
+.testeur {
+  max-width: 40rem; margin: 0 auto; text-align: center;
+  padding: 44px 24px 40px;
+  border: 1px solid var(--bronze-eteint); border-radius: 4px;
+  background:
+    radial-gradient(ellipse 80% 70% at 50% 0%, rgba(168, 50, 31, .22), transparent 70%),
+    linear-gradient(180deg, var(--panneau-haut), var(--panneau-bas));
+  box-shadow: 0 0 0 4px var(--fond), 0 0 0 5px var(--filet);
+}
+.testeur h2 { font-size: clamp(1.5rem, 6vw, 2rem); letter-spacing: .06em; }
+.testeur p { margin: 0 0 14px; }
+.testeur .bouton { margin-top: 14px; }
+.testeur .adresse { margin: 22px 0 0; color: var(--sourdine); font-size: .9375rem; overflow-wrap: anywhere; }
+
+/* ---------- Pied de page ---------- */
+.pied {
+  border-top: 1px solid var(--filet); margin-top: 24px;
+  padding: 40px var(--marge) 48px; text-align: center;
+  color: var(--sourdine); font-size: .9375rem;
+}
+.pied .studio { width: 168px; height: auto; margin: 0 auto 18px; opacity: .78; }
+.pied p { margin: 6px 0; }
+.pied a { color: var(--texte); }
+
+/* ---------- Page d'informations ---------- */
+.barre {
+  position: relative; display: flex; align-items: center;
+  padding: 12px var(--marge); min-height: 68px;
+  border-bottom: 1px solid var(--filet);
+}
+.barre .retour {
+  display: flex; align-items: center; gap: 12px; text-decoration: none;
+  font: 900 1.375rem/1 var(--titre); letter-spacing: .1em;
+}
+.barre .retour img { width: 40px; height: 40px; border-radius: 9px; border: 1px solid rgba(240, 210, 122, .35); }
+.barre .langues { top: 12px; }
+
+.texte { max-width: 42rem; margin: 0 auto; padding: 48px var(--marge) 24px; }
+.texte h1 { font-size: clamp(1.75rem, 7vw, 2.5rem); letter-spacing: .05em; color: var(--or); }
+.texte h2 {
+  font-size: 1.375rem; letter-spacing: .06em; margin: 48px 0 6px;
+  padding-bottom: 10px; border-bottom: 1px solid var(--filet);
+}
+.texte h3 { font-size: 1.0625rem; letter-spacing: .05em; color: var(--bronze); margin: 28px 0 6px; }
+.texte p { margin: 0 0 12px; }
+.texte .date { color: var(--sourdine); font-style: italic; margin-top: 14px; }
+
+@media (min-width: 640px) {
+  :root { --marge: 32px; }
+  .atouts { grid-template-columns: 1fr 1fr; gap: 20px; }
+  .entete .icone { width: 104px; height: 104px; border-radius: 24px; }
+  .entete .sous-titre { font-size: .9375rem; }
+}
+@media (min-width: 980px) {
+  .atouts { grid-template-columns: repeat(3, 1fr); }
+  .piste > li { flex: 1 1 0; max-width: 200px; }
+  .section { padding-top: 96px; padding-bottom: 96px; }
+}
+@media (max-width: 359px) {
+  .barre .retour span { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bouton { transition: none; }
+  .bouton:hover { transform: none; }
+}
