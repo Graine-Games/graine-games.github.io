@@ -149,7 +149,7 @@ h1, h2, h3 { font-family: var(--titre); font-weight: 700; line-height: 1.2; marg
     background: linear-gradient(160deg, #3A302B, #1C1614 60%);
     box-shadow: 0 0 0 1px rgba(240, 210, 122, .25), 0 30px 80px rgba(0, 0, 0, .7), 0 0 120px rgba(201, 162, 74, .12);
   }
-  .entete .ecran img { height: min(62vh, 700px); width: auto; border-radius: 32px; }
+  .entete .ecran img { height: min(56vh, 880px); width: auto; border-radius: 32px; }
   .entete .ecran::after { content: none; }
   .entete .accroche { margin-top: 0; }
 }
