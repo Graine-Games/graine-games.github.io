@@ -15,28 +15,57 @@
 <link rel="icon" href="favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="preload" href="fonts/Cinzel.ttf" as="font" type="font/ttf" crossorigin>
-<link rel="stylesheet" href="style.css?v=20261009e">
+<link rel="stylesheet" href="style.css?v=20261009f">
 </head>
 <body>
 <a class="lien-evitement" href="#jeu" data-i18n="evitement">Aller au contenu</a>
 
 <header class="entete">
+  <!-- L'arene de l'ecran titre, vivante : arene.js la dessine ici (portage de harena/docs/maquettes/lancement.html). -->
+  <div class="arene" aria-hidden="true"></div>
   <nav class="langues" aria-label="Langue">
     <button type="button" data-lang="fr" lang="fr" aria-pressed="true">FR</button>
     <button type="button" data-lang="en" lang="en" aria-pressed="false">EN</button>
     <button type="button" data-lang="es" lang="es" aria-pressed="false">ES</button>
   </nav>
   <h1 class="cache">HARENA</h1>
-  <figure class="ecran">
-    <img src="img/entete-titre.jpg" width="1080" height="2150" alt="L'écran titre de HARENA : le colisée, sa foule et un gladiateur à la porte de l'arène" data-i18n-alt="ecranAlt" fetchpriority="high">
-  </figure>
-  <p class="accroche" data-i18n="accroche">Fonde ta maison, recrute tes gladiateurs et forge ta gloire dans le sable du colisée.</p>
-  <a class="bouton" href="#testeur" data-i18n="cta">Devenir testeur</a>
-  <p class="android" aria-label="Android">
-    <!-- Le robot Android est reproduit d'apres l'oeuvre creee et partagee par Google, sous licence CC BY 3.0 (credit en page d'informations). -->
-    <svg viewBox="1 5 22 13" width="37" height="22" aria-hidden="true" focusable="false"><path fill="#3DDC84" d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85a.637.637 0 0 0-.83.22l-1.88 3.24a11.43 11.43 0 0 0-8.94 0L5.65 5.67a.643.643 0 0 0-.87-.2c-.28.18-.37.54-.22.83L6.4 9.48A10.78 10.78 0 0 0 1 18h22a10.78 10.78 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>
-    <span>Android</span>
-  </p>
+  <!-- HARENA grave en or, celui de l'ecran titre (titre C du prototype) : capitales Cinzel taillees en V par un
+       eclairage SVG venu du soleil, en haut a droite. Fixe, lisible sans script ; arene.js n'en anime que l'eclat. -->
+  <svg class="titre" viewBox="-10 86 380 128" aria-hidden="true" focusable="false">
+    <defs>
+      <filter id="tTaille" x="-6%" y="-40%" width="112%" height="180%" color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1.6" result="flou"/>
+        <feDiffuseLighting in="flou" surfaceScale="3.6" diffuseConstant="1.15" lighting-color="#fff1d2" result="lum"><feDistantLight azimuth="-48" elevation="34"/></feDiffuseLighting>
+        <feSpecularLighting in="flou" surfaceScale="3.6" specularConstant=".5" specularExponent="22" lighting-color="#fff4e2" result="spec"><feDistantLight azimuth="-48" elevation="34"/></feSpecularLighting>
+        <feFlood flood-color="#b8903f" result="base"/>
+        <feComposite in="lum" in2="base" operator="arithmetic" k1="1.25" result="teinte"/>
+        <feComposite in="spec" in2="SourceAlpha" operator="in" result="eclat"/>
+        <feComposite in="teinte" in2="eclat" operator="arithmetic" k2="1" k3=".55" result="metal"/>
+        <feComposite in="metal" in2="SourceAlpha" operator="in" result="lettres"/>
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1.1" result="o1"/><feOffset in="o1" dx="-1" dy="1.6" result="o2"/>
+        <feFlood flood-color="#120c08" flood-opacity=".45"/><feComposite in2="o2" operator="in" result="ombre"/>
+        <feMerge><feMergeNode in="ombre"/><feMergeNode in="lettres"/></feMerge>
+      </filter>
+      <filter id="tOmbreFine" x="-5%" y="-40%" width="110%" height="180%"><feDropShadow dx="-.6" dy=".9" stdDeviation=".6" flood-color="#0e0a06" flood-opacity=".7"/></filter>
+      <linearGradient id="tEclat" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fffaf0" stop-opacity="0"/><stop offset=".485" stop-color="#fffaf0" stop-opacity="0"/><stop offset=".5" stop-color="#fffdf6" stop-opacity=".55"/><stop offset=".515" stop-color="#fffaf0" stop-opacity="0"/><stop offset="1" stop-color="#fffaf0" stop-opacity="0"/></linearGradient>
+      <radialGradient id="tVoile"><stop offset="0" stop-color="#0c1220" stop-opacity=".34"/><stop offset=".6" stop-color="#0c1220" stop-opacity=".12"/><stop offset="1" stop-color="#0c1220" stop-opacity="0"/></radialGradient>
+      <mask id="tMasque" maskUnits="userSpaceOnUse" x="-10" y="86" width="380" height="128"><text x="185" y="160" font-family="Cinzel, serif" font-weight="700" font-size="55" letter-spacing="10" text-anchor="middle" fill="#fff">HARENA</text></mask>
+    </defs>
+    <ellipse cx="180" cy="150" rx="185" ry="62" fill="url(#tVoile)"/>
+    <g fill="#000" filter="url(#tTaille)"><text x="185" y="160" font-family="Cinzel, serif" font-weight="700" font-size="55" letter-spacing="10" text-anchor="middle">HARENA</text></g>
+    <g fill="#e2bd72" filter="url(#tOmbreFine)"><text x="183" y="185" font-family="Cinzel, serif" font-weight="700" font-size="11" letter-spacing="6" text-anchor="middle" data-i18n="arenaSousTitre">GLADIATEURS</text></g>
+    <path d="M60 181 H98 M262 181 H300" stroke="#d6b062" stroke-width=".9"/><path d="M60 182 H98 M262 182 H300" stroke="#3a2608" stroke-width=".6" opacity=".4"/>
+    <g mask="url(#tMasque)"><rect class="eclat" x="-576" y="100" width="1152" height="100" fill="url(#tEclat)" transform="translate(-216 0) rotate(-14 0 150)" style="mix-blend-mode:screen"/></g>
+  </svg>
+  <div class="appel">
+    <p class="accroche" data-i18n="accroche">Fonde ta maison, recrute tes gladiateurs et forge ta gloire dans le sable du colisée.</p>
+    <a class="bouton" href="#testeur" data-i18n="cta">Devenir testeur</a>
+    <p class="android" aria-label="Android">
+      <!-- Le robot Android est reproduit d'apres l'oeuvre creee et partagee par Google, sous licence CC BY 3.0 (credit en page d'informations). -->
+      <svg viewBox="1 5 22 13" width="37" height="22" aria-hidden="true" focusable="false"><path fill="#3DDC84" d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85a.637.637 0 0 0-.83.22l-1.88 3.24a11.43 11.43 0 0 0-8.94 0L5.65 5.67a.643.643 0 0 0-.87-.2c-.28.18-.37.54-.22.83L6.4 9.48A10.78 10.78 0 0 0 1 18h22a10.78 10.78 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>
+      <span>Android</span>
+    </p>
+  </div>
 </header>
 
 <main id="jeu">
@@ -105,6 +134,7 @@
   <p>© 2026 Graine Games</p>
 </footer>
 
-<script src="langue.js?v=20261009e"></script>
+<script src="langue.js?v=20261009f"></script>
+<script src="arene.js?v=20261009f"></script>
 </body>
 </html>

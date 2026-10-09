@@ -103,55 +103,56 @@ h1, h2, h3 { font-family: var(--titre); font-weight: 700; line-height: 1.2; marg
 }
 .bouton:hover { color: #1A120C; filter: brightness(1.08); transform: translateY(-1px); }
 
-/* ---------- En-tête : l'écran titre du jeu, tel que le joueur le voit ---------- */
+/* ---------- En-tête : l'arène de l'écran titre, vivante (arene.js), sur toute la largeur ----------
+   La scène remplit l'en-tête ; HARENA est gravé sur le ciel, l'accroche et le bouton sur le sable.
+   Sans script : la nuit de la charte, le titre, le texte et le bouton. --s est l'échelle de la scène
+   (px par unité du prototype 360 × 780), posée par arene.js. */
 .cache {
   position: absolute; width: 1px; height: 1px; overflow: hidden;
   clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
 }
 .entete {
+  --s: .85;
   position: relative; isolation: isolate; overflow: hidden;
+  height: 100vh; height: 100svh; min-height: 540px;
+  background: var(--fond);
+  margin-bottom: 48px;
+}
+.arene, .arene > * { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; }
+.arene { overflow: hidden; pointer-events: none; }
+.arene .ombres { mix-blend-mode: multiply; }
+.arene .rais { mix-blend-mode: screen; }
+/* le passage d'un nuage devant le soleil : la scène baisse un peu et refroidit ; au soleil, elle chauffe */
+.arene .lumiere { opacity: 0; }
+.arene .voile { background: #b6c1d2; mix-blend-mode: multiply; }
+.arene .diffus { background: #3a414e; mix-blend-mode: screen; }
+.arene .chaleur { background: rgba(255, 206, 140, .32); mix-blend-mode: soft-light; }
+.entete .titre {
+  position: absolute; left: 50%; top: calc(86px * var(--s));
+  width: calc(380px * var(--s)); max-width: none; transform: translateX(-50%);
+}
+/* L'appel, sur le sable assombri : il s'ouvre en dégradé au-dessus du texte et finit dans la nuit de la page. */
+.appel {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
   display: flex; flex-direction: column; align-items: center; text-align: center;
-  padding: 0 var(--marge) 64px;
+  padding: 72px var(--marge) 24px;
+  background: linear-gradient(180deg, rgba(20, 16, 15, 0), rgba(20, 16, 15, .66) 72px, rgba(20, 16, 15, .86) 70%, var(--fond));
 }
-/* Téléphone : l'écran titre occupe toute la largeur, et le sable se fond dans la nuit. */
-.entete .ecran { position: relative; margin: 0 calc(-1 * var(--marge)); width: 100vw; }
-.entete .ecran img { display: block; width: 100%; height: auto; }
-.entete .ecran::after {
-  content: ""; position: absolute; inset: auto 0 0; height: 22%;
-  background: linear-gradient(180deg, transparent, var(--fond));
+.appel .accroche {
+  max-width: 30rem; margin: 0 0 22px;
+  font-size: 1.1875rem; font-style: italic; line-height: 1.55;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .7);
 }
-.entete .accroche {
-  max-width: 30rem; margin: -8px auto 30px;
-  font-size: 1.1875rem; font-style: italic;
-}
-.entete .android {
+.appel .android {
   display: flex; align-items: center; justify-content: center; gap: 10px;
-  margin: 26px 0 0; font: 700 1rem/1 var(--titre); letter-spacing: .12em; color: var(--texte);
+  margin: 18px 0 0; font: 700 1rem/1 var(--titre); letter-spacing: .12em; color: var(--texte);
 }
-/* Écran large : l'écran titre au centre, dans un cadre de téléphone, sur son propre décor
-   flouté qui déborde jusqu'aux bords. */
 @media (min-width: 760px) {
-  .entete { padding-top: 48px; }
-  .entete .ecran { margin-bottom: 32px; }
-  .entete::before {
-    content: ""; position: absolute; inset: -40px; z-index: -2;
-    background: url("img/entete-titre.jpg") center 70% / cover no-repeat;
-    filter: blur(30px) saturate(1.15); opacity: .85;
-  }
-  .entete::after {
-    content: ""; position: absolute; inset: 0; z-index: -1;
-    background: radial-gradient(ellipse 55% 65% at 50% 40%, rgba(20, 16, 15, 0), rgba(20, 16, 15, .7) 80%),
-                linear-gradient(180deg, transparent 70%, var(--fond));
-  }
-  .entete .ecran {
-    width: auto; margin: 0 0 40px;
-    padding: 12px; border-radius: 44px;
-    background: linear-gradient(160deg, #3A302B, #1C1614 60%);
-    box-shadow: 0 0 0 1px rgba(240, 210, 122, .25), 0 30px 80px rgba(0, 0, 0, .7), 0 0 120px rgba(201, 162, 74, .12);
-  }
-  .entete .ecran img { height: min(56vh, 880px); width: auto; border-radius: 32px; }
-  .entete .ecran::after { content: none; }
-  .entete .accroche { margin-top: 0; }
+  .appel .accroche { max-width: 46rem; }
+}
+/* Très grand écran : l'appel et les langues grandissent avec la scène. */
+@media (min-width: 1800px) and (min-height: 1000px) {
+  .appel, .langues { zoom: 1.3; }
 }
 
 /* ---------- Sections ---------- */
