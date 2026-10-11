@@ -369,7 +369,10 @@ main {
 }
 @media (min-width: 980px) {
   .atouts { grid-template-columns: repeat(3, 1fr); }
-  .piste > li { flex: 1 1 0; max-width: 210px; }
+  /* onze captures : sur PC la piste se replie en rangees centrees au lieu de defiler */
+  .piste { flex-wrap: wrap; justify-content: center; overflow: visible; row-gap: 28px; }
+  .piste > :first-child, .piste > :last-child { margin: 0; }
+  .piste > li { flex: 0 0 200px; }
   .section.galerie { max-width: 1480px; }   /* la galerie vend le jeu : plus large que le texte */
   .section { padding-top: 96px; padding-bottom: 96px; }
 }

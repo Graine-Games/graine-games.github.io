@@ -15,7 +15,7 @@
 <link rel="icon" href="favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="preload" href="fonts/Cinzel.ttf" as="font" type="font/ttf" crossorigin>
-<link rel="stylesheet" href="style.css?v=20261011a">
+<link rel="stylesheet" href="style.css?v=20261011b">
 </head>
 <body>
 <a class="lien-evitement" href="#jeu" data-i18n="evitement">Aller au contenu</a>
@@ -81,15 +81,19 @@
   <section class="section galerie" aria-labelledby="titre-galerie">
     <h2 id="titre-galerie" data-i18n="galerieTitre">Dans l'arène</h2>
     <div class="filet-orne" aria-hidden="true"><span></span></div>
-    <!-- Les captures 720×1425 (WebP) : écrans de la v8 pris sur émulateur, barres système retirées. Sans légende : le texte est dans l'alt, quatre écrans montrent déjà leur nom. Une capture absente retire son cadre. -->
+    <!-- Les captures 720×1425 (WebP) : écrans de la v8 pris sur émulateur, barres système retirées, clair et sombre en alternance. Une capture absente retire son cadre. -->
     <ul class="piste">
-      <li><figure><div class="cadre"><img src="img/captures/colisee.webp" width="720" height="1425" loading="lazy" alt="Le colisée" data-i18n-alt="capColisee" onerror="this.closest('li').hidden=true"></div></figure></li>
-      <li><figure><div class="cadre"><img src="img/captures/combat.webp" width="720" height="1425" loading="lazy" alt="Le combat" data-i18n-alt="capCombat" onerror="this.closest('li').hidden=true"></div></figure></li>
-      <li><figure><div class="cadre"><img src="img/captures/ville.webp" width="720" height="1425" loading="lazy" alt="La ville" data-i18n-alt="capVille" onerror="this.closest('li').hidden=true"></div></figure></li>
-      <li><figure><div class="cadre"><img src="img/captures/ludus.webp" width="720" height="1425" loading="lazy" alt="Le Ludus" data-i18n-alt="capLudus" onerror="this.closest('li').hidden=true"></div></figure></li>
-      <li><figure><div class="cadre"><img src="img/captures/preparation.webp" width="720" height="1425" loading="lazy" alt="La préparation" data-i18n-alt="capPreparation" onerror="this.closest('li').hidden=true"></div></figure></li>
-      <li><figure><div class="cadre"><img src="img/captures/marche.webp" width="720" height="1425" loading="lazy" alt="Le marché" data-i18n-alt="capMarche" onerror="this.closest('li').hidden=true"></div></figure></li>
-      <li><figure><div class="cadre"><img src="img/captures/carte.webp" width="720" height="1425" loading="lazy" alt="La carte du tour" data-i18n-alt="capCarte" onerror="this.closest('li').hidden=true"></div></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/titre.webp" width="720" height="1425" loading="lazy" alt="" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capTitre">Écran titre</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/etendard.webp" width="720" height="1425" loading="lazy" alt="" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capEtendard">L'étendard</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/ville.webp" width="720" height="1425" loading="lazy" alt="" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capVille">La ville</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/taverne.webp" width="720" height="1425" loading="lazy" alt="" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capTaverne">La taverne</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/colisee.webp" width="720" height="1425" loading="lazy" alt="" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capColisee">Le colisée</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/preparation.webp" width="720" height="1425" loading="lazy" alt="" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capPreparation">La préparation</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/pantheon.webp" width="720" height="1425" loading="lazy" alt="" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capPantheon">Le panthéon</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/combat.webp" width="720" height="1425" loading="lazy" alt="" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capCombat">Le combat</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/ludus.webp" width="720" height="1425" loading="lazy" alt="" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capLudus">Le Ludus</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/marche.webp" width="720" height="1425" loading="lazy" alt="" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capMarche">Le marché</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/carte.webp" width="720" height="1425" loading="lazy" alt="" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capCarte">La carte</figcaption></figure></li>
     </ul>
   </section>
 
@@ -143,7 +147,7 @@
   <p>© 2026 Graine Games</p>
 </footer>
 
-<script src="langue.js?v=20261011a"></script>
-<script src="arene.js?v=20261011a"></script>
+<script src="langue.js?v=20261011b"></script>
+<script src="arene.js?v=20261011b"></script>
 </body>
 </html>
