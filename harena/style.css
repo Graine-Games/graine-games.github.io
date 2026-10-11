@@ -63,11 +63,11 @@ h1, h2, h3 { font-family: var(--titre); font-weight: 700; line-height: 1.2; marg
 .langues {
   position: absolute; top: 12px; right: var(--marge); z-index: 5;
   display: flex; gap: 2px; padding: 2px 6px; border-radius: 999px;
-  background: rgba(20, 16, 15, .6); backdrop-filter: blur(6px);
+  background: rgba(20, 16, 15, .85); backdrop-filter: blur(6px);
 }
 .langues button {
   font: 600 .8125rem/1 var(--titre); letter-spacing: .12em;
-  color: var(--sourdine); background: none; border: 0; cursor: pointer;
+  color: var(--texte); background: none; border: 0; cursor: pointer;
   padding: 10px 8px; min-width: 44px; min-height: 44px;
 }
 .langues button:hover { color: var(--texte); }
@@ -82,7 +82,7 @@ h1, h2, h3 { font-family: var(--titre); font-weight: 700; line-height: 1.2; marg
 .son {
   display: grid; place-items: center; width: 48px; height: 48px; padding: 0;
   border: 0; border-radius: 50%; cursor: pointer; color: var(--sourdine);
-  background: rgba(20, 16, 15, .6); backdrop-filter: blur(6px);
+  background: rgba(20, 16, 15, .85); backdrop-filter: blur(6px);
 }
 .son:hover { color: var(--texte); }
 .son[aria-pressed="true"] { color: var(--pierre); }
@@ -251,7 +251,7 @@ main {
 .piste > li { flex: 0 0 min(62vw, 240px); scroll-snap-align: center; }
 .piste figure { margin: 0; }
 .piste .cadre {
-  position: relative; aspect-ratio: 1080 / 2400; border-radius: 16px; padding: 6px;
+  position: relative; aspect-ratio: 1080 / 2138; border-radius: 16px; padding: 6px;
   background: #1B1513; border: 1px solid var(--filet);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 16px 32px -14px rgba(0, 0, 0, .85);
 }
@@ -364,10 +364,13 @@ main {
 @media (min-width: 640px) {
   :root { --marge: 32px; }
   .atouts { grid-template-columns: 1fr 1fr; gap: 22px; }
+  /* titre et texte alignes d'une carte a l'autre dans la rangee, quel que soit le nombre de lignes du titre */
+  .atouts li { grid-row: span 2; display: grid; grid-template-rows: subgrid; row-gap: 0; align-content: start; }
 }
 @media (min-width: 980px) {
   .atouts { grid-template-columns: repeat(3, 1fr); }
-  .piste > li { flex: 1 1 0; max-width: 200px; }
+  .piste > li { flex: 1 1 0; max-width: 210px; }
+  .section.galerie { max-width: 1480px; }   /* la galerie vend le jeu : plus large que le texte */
   .section { padding-top: 96px; padding-bottom: 96px; }
 }
 @media (max-width: 359px) {
