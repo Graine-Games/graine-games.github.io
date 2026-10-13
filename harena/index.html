@@ -4,18 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title data-i18n="titre">HARENA</title>
-<meta name="description" content="HARENA, jeu de cartes de gladiateurs pour Android : fonde ta maison, recrute tes gladiateurs et forge ta gloire dans le sable du colisée. Sans publicité, jouable hors ligne, en français, anglais et espagnol.">
+<meta name="description" content="HARENA, jeu de gladiateurs pour Android : fonde ton Ludus, entraîne tes gladiateurs et mène-les vers leur destinée dans le sable du colisée. Sans publicité, jouable hors ligne, en français, anglais et espagnol.">
 <meta name="theme-color" content="#14100F">
 <meta property="og:type" content="website">
 <meta property="og:title" content="HARENA">
-<meta property="og:description" content="Fonde ta maison, recrute tes gladiateurs et forge ta gloire dans le sable du colisée.">
+<meta property="og:description" content="Fonde ton Ludus, entraîne tes gladiateurs et mène-les vers leur destinée dans le sable du colisée.">
 <meta property="og:image" content="https://graine-games.github.io/harena/img/harena-512.png">
 <meta property="og:site_name" content="Graine Games">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="preload" href="fonts/Cinzel.ttf" as="font" type="font/ttf" crossorigin>
-<link rel="stylesheet" href="style.css?v=20261012a">
+<link rel="stylesheet" href="style.css?v=20261013a">
 </head>
 <body>
 <a class="lien-evitement" href="#jeu" data-i18n="evitement">Aller au contenu</a>
@@ -36,36 +36,29 @@
   </div>
   <audio class="musique" src="audio/titre.mp3" preload="none" loop></audio>
   <h1 class="cache">HARENA</h1>
-  <!-- HARENA grave en or, celui de l'ecran titre (titre C du prototype) : capitales Cinzel taillees en V par un
-       eclairage SVG venu du soleil, en haut a droite. Fixe, lisible sans script ; arene.js n'en anime que l'eclat. -->
+  <!-- HARENA, le titre de lancement valide le 13 octobre (harena, tools/lancement/colisee.py `titre`) : traite comme le nom
+       d'un lieu, Cinzel 900 a 0,16 em, l'or plat degrade des villes (orGrave), un contour plein d'encre de 2,4 px centre
+       sur la lettre, ni ombre ni voile. GLADIATEURS en 800, corps 13, meme or, contour serre. Fixe, lisible sans script ;
+       arene.js n'en anime que l'eclat. -->
   <svg class="titre" viewBox="-10 86 380 128" aria-hidden="true" focusable="false">
     <defs>
-      <filter id="tTaille" x="-6%" y="-40%" width="112%" height="180%" color-interpolation-filters="sRGB">
-        <feGaussianBlur in="SourceAlpha" stdDeviation="1.6" result="flou"/>
-        <feDiffuseLighting in="flou" surfaceScale="3.6" diffuseConstant="1.15" lighting-color="#fff1d2" result="lum"><feDistantLight azimuth="-48" elevation="34"/></feDiffuseLighting>
-        <feSpecularLighting in="flou" surfaceScale="3.6" specularConstant=".5" specularExponent="22" lighting-color="#fff4e2" result="spec"><feDistantLight azimuth="-48" elevation="34"/></feSpecularLighting>
-        <feFlood flood-color="#b8903f" result="base"/>
-        <feComposite in="lum" in2="base" operator="arithmetic" k1="1.25" result="teinte"/>
-        <feComposite in="spec" in2="SourceAlpha" operator="in" result="eclat"/>
-        <feComposite in="teinte" in2="eclat" operator="arithmetic" k2="1" k3=".55" result="metal"/>
-        <feComposite in="metal" in2="SourceAlpha" operator="in" result="lettres"/>
-        <feGaussianBlur in="SourceAlpha" stdDeviation="1.1" result="o1"/><feOffset in="o1" dx="-1" dy="1.6" result="o2"/>
-        <feFlood flood-color="#120c08" flood-opacity=".45"/><feComposite in2="o2" operator="in" result="ombre"/>
-        <feMerge><feMergeNode in="ombre"/><feMergeNode in="lettres"/></feMerge>
-      </filter>
-      <filter id="tOmbreFine" x="-5%" y="-40%" width="110%" height="180%"><feDropShadow dx="-.6" dy=".9" stdDeviation=".6" flood-color="#0e0a06" flood-opacity=".7"/></filter>
+      <linearGradient id="tOr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF1C4"/><stop offset=".4" stop-color="#E8C674"/><stop offset=".62" stop-color="#B4893D"/><stop offset="1" stop-color="#E2BE6A"/></linearGradient>
       <linearGradient id="tEclat" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fffaf0" stop-opacity="0"/><stop offset=".485" stop-color="#fffaf0" stop-opacity="0"/><stop offset=".5" stop-color="#fffdf6" stop-opacity=".55"/><stop offset=".515" stop-color="#fffaf0" stop-opacity="0"/><stop offset="1" stop-color="#fffaf0" stop-opacity="0"/></linearGradient>
-      <radialGradient id="tVoile"><stop offset="0" stop-color="#0c1220" stop-opacity=".34"/><stop offset=".6" stop-color="#0c1220" stop-opacity=".12"/><stop offset="1" stop-color="#0c1220" stop-opacity="0"/></radialGradient>
-      <mask id="tMasque" maskUnits="userSpaceOnUse" x="-10" y="86" width="380" height="128"><text x="185" y="160" font-family="Cinzel, serif" font-weight="700" font-size="55" letter-spacing="10" text-anchor="middle" fill="#fff">HARENA</text></mask>
+      <mask id="tMasque" maskUnits="userSpaceOnUse" x="-10" y="86" width="380" height="128"><text x="182.7" y="160" font-family="Cinzel, serif" font-weight="900" font-size="55" letter-spacing="8.8" text-anchor="middle" fill="#fff">HARENA</text></mask>
     </defs>
-    <ellipse cx="180" cy="150" rx="185" ry="62" fill="url(#tVoile)"/>
-    <g fill="#000" filter="url(#tTaille)"><text x="185" y="160" font-family="Cinzel, serif" font-weight="700" font-size="55" letter-spacing="10" text-anchor="middle">HARENA</text></g>
-    <g fill="#e2bd72" filter="url(#tOmbreFine)"><text x="183" y="185" font-family="Cinzel, serif" font-weight="700" font-size="11" letter-spacing="6" text-anchor="middle" data-i18n="arenaSousTitre">GLADIATEURS</text></g>
-    <path d="M60 181 H98 M262 181 H300" stroke="#d6b062" stroke-width=".9"/><path d="M60 182 H98 M262 182 H300" stroke="#3a2608" stroke-width=".6" opacity=".4"/>
+    <g font-family="Cinzel, serif" font-weight="900" font-size="55" letter-spacing="8.8" text-anchor="middle">
+      <text x="182.7" y="160" fill="#1E1205" stroke="#1E1205" stroke-width="2.4" stroke-linejoin="round">HARENA</text>
+      <text x="182.7" y="160" fill="url(#tOr)">HARENA</text>
+    </g>
+    <g font-family="Cinzel, serif" font-weight="800" font-size="13" letter-spacing="6" text-anchor="middle">
+      <text x="186" y="186" fill="#1E1205" stroke="#1E1205" stroke-width="1.2" stroke-linejoin="round" data-i18n="arenaSousTitre">GLADIATEURS</text>
+      <text x="186" y="186" fill="#E2BD72" data-i18n="arenaSousTitre">GLADIATEURS</text>
+    </g>
+    <path d="M52 181 H90 M276 181 H314" stroke="#d6b062" stroke-width=".9"/><path d="M52 182 H90 M276 182 H314" stroke="#3a2608" stroke-width=".6" opacity=".4"/>
     <g mask="url(#tMasque)"><rect class="eclat" x="-576" y="100" width="1152" height="100" fill="url(#tEclat)" transform="translate(-216 0) rotate(-14 0 150)" style="mix-blend-mode:screen"/></g>
   </svg>
   <div class="appel">
-    <p class="accroche" data-i18n="accroche">Fonde ta maison, recrute tes gladiateurs et forge ta gloire dans le sable du colisée.</p>
+    <p class="accroche" data-i18n="accroche">Fonde ton Ludus, entraîne tes gladiateurs et mène-les vers leur destinée dans le sable du colisée.</p>
     <a class="bouton" href="#testeur" data-i18n="cta">Devenir testeur</a>
     <p class="android" aria-label="Android">
       <!-- Le robot Android est reproduit d'apres l'oeuvre creee et partagee par Google, sous licence CC BY 3.0 (credit en page d'informations). -->
@@ -79,64 +72,95 @@
   <p class="epigraphe" data-i18n="epigraphe"><span class="minium">La foule gronde.</span> Ton étendard flotte au-dessus du sable. Tes gladiateurs entrent dans l'arène.</p>
 
   <section class="section galerie" aria-labelledby="titre-galerie">
-    <h2 id="titre-galerie" data-i18n="galerieTitre">Dans l'arène</h2>
+    <h2 id="titre-galerie" data-i18n="galerieTitre">Entre dans l’arène</h2>
     <div class="filet-orne" aria-hidden="true"><span></span></div>
-    <!-- Les captures 720×1425 (WebP) : écrans de la v8 pris sur émulateur, barres système retirées, clair et sombre en alternance. Une capture absente retire son cadre. -->
-    <ul class="piste">
-      <li><figure><div class="cadre"><img src="img/captures/titre.webp" width="720" height="1425" loading="lazy" alt="" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capTitre">Écran titre</figcaption></figure></li>
-      <li><figure><div class="cadre"><img src="img/captures/etendard.webp" width="720" height="1425" loading="lazy" alt="" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capEtendard">L'étendard</figcaption></figure></li>
-      <li><figure><div class="cadre"><img src="img/captures/ville.webp" width="720" height="1425" loading="lazy" alt="" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capVille">La ville</figcaption></figure></li>
-      <li><figure><div class="cadre"><img src="img/captures/taverne.webp" width="720" height="1425" loading="lazy" alt="" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capTaverne">La taverne</figcaption></figure></li>
-      <li><figure><div class="cadre"><img src="img/captures/colisee.webp" width="720" height="1425" loading="lazy" alt="" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capColisee">Le colisée</figcaption></figure></li>
-      <li><figure><div class="cadre"><img src="img/captures/preparation.webp" width="720" height="1425" loading="lazy" alt="" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capPreparation">La préparation</figcaption></figure></li>
-      <li><figure><div class="cadre"><img src="img/captures/pantheon.webp" width="720" height="1425" loading="lazy" alt="" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capPantheon">Le panthéon</figcaption></figure></li>
-      <li><figure><div class="cadre"><img src="img/captures/combat.webp" width="720" height="1425" loading="lazy" alt="" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capCombat">Le combat</figcaption></figure></li>
-      <li><figure><div class="cadre"><img src="img/captures/ludus.webp" width="720" height="1425" loading="lazy" alt="" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capLudus">Le Ludus</figcaption></figure></li>
-      <li><figure><div class="cadre"><img src="img/captures/marche.webp" width="720" height="1425" loading="lazy" alt="" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capMarche">Le marché</figcaption></figure></li>
-      <li><figure><div class="cadre"><img src="img/captures/carte.webp" width="720" height="1425" loading="lazy" alt="" onerror="this.closest('li').hidden=true"></div><figcaption data-i18n="capCarte">La carte</figcaption></figure></li>
-    </ul>
+    <!-- Douze écrans de la v0.7.0 dans l'ordre d'une partie (WebP 720×1425, barres système rognées, dans img/captures/) ; les flèches font défiler la piste. -->
+    <div class="carrousel">
+      <button type="button" class="defile" data-sens="-1" aria-label="Écrans précédents" data-i18n-aria="defilePrecedent">‹</button>
+      <ul class="piste">
+      <!-- L'écran titre validé le 13 octobre (harena, commit d97736db), avant les douze étapes. -->
+      <li class="ouverture"><figure><div class="cadre"><img src="img/captures/titre.webp" width="720" height="1425" loading="lazy" alt="L’écran titre de HARENA" data-i18n-alt="titreAlt"></div><figcaption data-i18n="cTitre">L’écran titre</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/ludus.webp" width="720" height="1425" loading="lazy" alt="Le Ludus et ses gladiateurs à l’entraînement" data-i18n-alt="t1Alt"></div><figcaption data-i18n="c1">Le Ludus</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/etendard.webp" width="720" height="1425" loading="lazy" alt="L’atelier de l’étendard" data-i18n-alt="t2Alt"></div><figcaption data-i18n="c2">L’étendard</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/marche.webp" width="720" height="1425" loading="lazy" alt="Le marché aux esclaves" data-i18n-alt="t3Alt"></div><figcaption data-i18n="c3">Le marché</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/combat.webp" width="720" height="1425" loading="lazy" alt="Un combat à trois contre trois" data-i18n-alt="t4Alt"></div><figcaption data-i18n="c4">Le combat</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/victoire.webp" width="720" height="1425" loading="lazy" alt="L’écran de victoire et l’expérience gagnée" data-i18n-alt="t5Alt"></div><figcaption data-i18n="c5">La victoire</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/doctore.webp" width="720" height="1425" loading="lazy" alt="Les capacités d’un gladiateur au Doctore" data-i18n-alt="t6Alt"></div><figcaption data-i18n="c6">Le Doctore</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/taverne.webp" width="720" height="1425" loading="lazy" alt="La taverne et ses lanistes" data-i18n-alt="t7Alt"></div><figcaption data-i18n="c7">La taverne</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/colisee.webp" width="720" height="1425" loading="lazy" alt="Le colisée de Carthage et son Champion" data-i18n-alt="t8Alt"></div><figcaption data-i18n="c8">Le Champion</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/ville.webp" width="720" height="1425" loading="lazy" alt="La ville d’Alexandrie" data-i18n-alt="t9Alt"></div><figcaption data-i18n="c9">Alexandrie</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/carte.webp" width="720" height="1425" loading="lazy" alt="La carte du monde" data-i18n-alt="t10Alt"></div><figcaption data-i18n="c10">La carte</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/pantheon.webp" width="720" height="1425" loading="lazy" alt="Le Panthéon et sa fresque" data-i18n-alt="t11Alt"></div><figcaption data-i18n="c11">Le Panthéon</figcaption></figure></li>
+      <li><figure><div class="cadre"><img src="img/captures/rome.webp" width="720" height="1425" loading="lazy" alt="Le colisée de Rome et son Champion" data-i18n-alt="t12Alt"></div><figcaption data-i18n="c12">Rome</figcaption></figure></li>
+      </ul>
+      <button type="button" class="defile" data-sens="1" aria-label="Écrans suivants" data-i18n-aria="defileSuivant">›</button>
+    </div>
   </section>
 
   <section class="section" aria-labelledby="titre-jeu">
     <h2 id="titre-jeu" data-i18n="jeuTitre">Ce qui t'attend</h2>
     <div class="filet-orne" aria-hidden="true"><span></span></div>
-    <ul class="atouts">
+    <!-- Le parcours d'un joueur, dans le même ordre que les écrans : numéroté à la romaine. -->
+    <ol class="atouts">
       <li>
-        <h3 data-i18n="maisonTitre">Fonde ta <span class="minium">maison</span> de gladiateurs</h3>
-        <p data-i18n="maisonTexte">Choisis ta terre natale parmi cinq, compose ton étendard et grave le nom de ta maison au linteau de ton Ludus. Un colisée d'essai, puis un messager de l'Empereur te met sur la route.</p>
+        <h3 data-i18n="t1Titre">Fonde ton <span class="minium">Ludus</span></h3>
+        <p data-i18n="t1Texte">Choisis ta province, donne un nom à ta maison et ouvre les portes de ton école de gladiateurs.</p>
       </li>
       <li>
-        <h3 data-i18n="routeTitre">De l'Afrique à <span class="minium">Rome</span></h3>
-        <p data-i18n="routeTexte">Parcours 32 étapes de la Maurétanie jusqu'à Rome, à travers les provinces de l'Empire. Chaque colisée a ses combats, ses maisons rivales et son champion. Gagne le cœur de la foule en le battant, ouvre la route vers la gloire.</p>
+        <h3 data-i18n="t2Titre">Crée ta marque avec ton <span class="minium">étendard</span></h3>
+        <p data-i18n="t2Texte">Forme, couleurs, emblème : ton étendard flotte sur ton Ludus et dans chaque colisée où tu combats.</p>
       </li>
       <li>
-        <h3 data-i18n="villeTitre">Une <span class="minium">ville</span> vivante à chaque étape</h3>
-        <p data-i18n="villeTexte">Les passants vont, les chars passent, les feux fument entre les maisons. Dans chaque ville, touche le colisée, la taverne, le marché, le Ludus ou le panthéon, où l'on garde les champions que tu as vaincus.</p>
+        <h3 data-i18n="t3Titre">Trouve tes gladiateurs au <span class="minium">marché</span></h3>
+        <p data-i18n="t3Texte">Apprends-en plus sur eux, repère les meilleurs et achète ceux qui feront ta légende.</p>
       </li>
       <li>
-        <h3 data-i18n="ludusTitre">Ton <span class="minium">Ludus</span> prend vie</h3>
-        <p data-i18n="ludusTexte">Dans la cour, ton équipe s'exerce au poteau sous l'œil du Doctore, maître du Ludus, qui règle avec toi les capacités. Tes autres gladiateurs attendent aux Cellules ; le Registre garde la trace de tous ceux que tu possèdes ou as vus.</p>
+        <h3 data-i18n="t4Titre">Prouve ta valeur dans l’<span class="minium">arène</span></h3>
+        <p data-i18n="t4Texte">Des combats dynamiques t’attendent. Bouclier, Lame, Lancier, Poursuite : fais la différence en envoyant le bon gladiateur face au bon adversaire.</p>
       </li>
       <li>
-        <h3 data-i18n="gladiateursTitre">Des dizaines de <span class="minium">gladiateurs</span> t'attendent</h3>
-        <p data-i18n="gladiateursTexte">Achète-les au marché d'esclaves : racheter l'un des tiens lui donne une étoile. Quatre familles, Bouclier, Lame, Lancier et Poursuite, se dominent en cercle, chacune avec sa règle. Lis l'équipe adverse, compose la tienne.</p>
+        <h3 data-i18n="t5Titre">Fais-les monter en <span class="minium">niveau</span></h3>
+        <p data-i18n="t5Texte">Chaque victoire leur rapporte de l’expérience : plus de vie, plus de force, plus de vitesse.</p>
       </li>
       <li>
-        <h3 data-i18n="combatTitre">À chaque tour de combat, <span class="minium">renverse</span> les certitudes</h3>
-        <p data-i18n="combatTexte">Avant le combat, échange tes gladiateurs à la préparation du match, puis regarde-les se battre en pied : vie et endurance en chiffres, coups à ton choix. Une erreur se paie, une bonne lecture remplira ta bourse en or.</p>
+        <h3 data-i18n="t6Titre">Apprends-leur de nouvelles <span class="minium">capacités</span></h3>
+        <p data-i18n="t6Texte">Fais appel au Doctore de ton Ludus pour que tes gladiateurs apprennent de nouvelles capacités.</p>
       </li>
-    </ul>
+      <li>
+        <h3 data-i18n="t7Titre">Déniche des combats à la <span class="minium">taverne</span></h3>
+        <p data-i18n="t7Texte">Les lanistes de passage te proposent des combats : de l’or à gagner, de l’expérience à prendre.</p>
+      </li>
+      <li>
+        <h3 data-i18n="t8Titre">Défie le <span class="minium">Champion</span> du colisée</h3>
+        <p data-i18n="t8Texte">Bats les maisons rivales une à une, puis affronte le Champion : sa défaite t’ouvre la route.</p>
+      </li>
+      <li>
+        <h3 data-i18n="t9Titre">Bâtis ta renommée de <span class="minium">ville</span> en ville</h3>
+        <p data-i18n="t9Texte">Chaque ville a son marché, sa taverne, son colisée et son Panthéon.</p>
+      </li>
+      <li>
+        <h3 data-i18n="t10Titre">Parcours l’<span class="minium">Empire</span> romain</h3>
+        <p data-i18n="t10Texte">32 villes et 24 provinces autour de la Méditerranée, de la Maurétanie jusqu’à l’Italie.</p>
+      </li>
+      <li>
+        <h3 data-i18n="t11Titre">Inscris tes exploits au <span class="minium">Panthéon</span></h3>
+        <p data-i18n="t11Texte">Chaque Champion vaincu cède sa place à l’un de tes gladiateurs.</p>
+      </li>
+      <li>
+        <h3 data-i18n="t12Titre">Atteins <span class="minium">Rome</span></h3>
+        <p data-i18n="t12Texte">Inscris ta légende dans l’histoire du colisée de Rome.</p>
+      </li>
+    </ol>
   </section>
-
 
   <section class="section" id="testeur" aria-labelledby="titre-testeur">
     <div class="testeur">
       <h2 id="titre-testeur" data-i18n="testeurTitre">Devenir testeur</h2>
       <div class="filet-orne" aria-hidden="true"><span></span></div>
-      <p data-i18n="testeurTexte1">HARENA est en test : ton avis façonne la suite.</p>
-      <p data-i18n="testeurTexte2">Pour rejoindre les testeurs, écris simplement au studio.</p>
-      <a class="bouton" href="mailto:contact.graine.games@gmail.com?subject=Devenir%20testeur%20HARENA" data-i18n="testeurBouton">Écrire au studio</a>
-      <p class="adresse">contact.graine.games@gmail.com</p>
+      <p data-i18n="testeurTexte1">HARENA est en test sur Google Play : la version 0.7.0 vient d’ouvrir. Hors ligne, sans publicité, en français, anglais et espagnol.</p>
+      <p data-i18n="testeurTexte2">Joue, puis dis au studio ce qui te plaît et ce qui te bloque : tes retours façonnent la suite.</p>
+      <p class="marche" data-i18n="testeurTexte3">Il te faut un compte Gmail valide. Demande à rejoindre le groupe des testeurs et, dans ta demande, écris quelques mots au studio : qui tu es, comment tu as connu HARENA, pourquoi tu veux le tester. Si tu es sélectionné, le studio revient vers toi très vite.</p>
+      <a class="bouton" href="https://groups.google.com/g/harena-testers" data-i18n="testeurBouton">Demander à rejoindre les tests</a>
     </div>
   </section>
 </main>
@@ -147,7 +171,25 @@
   <p>© 2026 Graine Games</p>
 </footer>
 
-<script src="langue.js?v=20261012a"></script>
-<script src="arene.js?v=20261012a"></script>
+<script>
+  // Les flèches de la galerie : un cran de piste à la fois ; au bout de la piste, la flèche de ce côté s'estompe.
+  document.querySelectorAll('.carrousel').forEach(function (c) {
+    var piste = c.querySelector('.piste'), fleches = c.querySelectorAll('.defile');
+    function bornes() {
+      fleches[0].disabled = piste.scrollLeft < 4;
+      fleches[1].disabled = piste.scrollLeft + piste.clientWidth > piste.scrollWidth - 4;
+    }
+    fleches.forEach(function (b) {
+      b.addEventListener('click', function () {
+        piste.scrollBy({ left: b.dataset.sens * piste.clientWidth * 0.8, behavior: 'smooth' });
+      });
+    });
+    piste.addEventListener('scroll', bornes, { passive: true });
+    window.addEventListener('resize', bornes);
+    bornes();
+  });
+</script>
+<script src="langue.js?v=20261013a"></script>
+<script src="arene.js?v=20261013a"></script>
 </body>
 </html>

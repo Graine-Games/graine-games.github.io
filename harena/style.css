@@ -220,38 +220,43 @@ main {
   filter: drop-shadow(0 -1px 0 #000);
 }
 
-/* Les six atouts : six pierres sombres, le titre taillé clair, un mot rubriqué. */
+/* ---------- Les douze étapes : des pierres sombres, le titre taillé clair, un mot rubriqué ----------
+   Numérotées à la romaine (I à XII) : c'est l'ordre réel d'une partie, le même que la galerie. */
 .atouts {
-  list-style: none; padding: 0; margin: 0;
-  display: grid; gap: 18px; grid-template-columns: 1fr;   /* la grille aligne les hauteurs d'une rangée */
+  list-style: none; padding: 0; margin: 0; counter-reset: etape;
+  display: grid; gap: 16px; grid-template-columns: 1fr;   /* la grille aligne les hauteurs d'une rangée */
 }
 .atouts li {
-  position: relative; border-radius: 4px; padding: 30px 28px 28px;
+  counter-increment: etape;
+  position: relative; border-radius: 4px; padding: 24px 24px 22px;
   background: linear-gradient(180deg, #221B18, #1B1513);
   border: 1px solid var(--filet);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04), 0 14px 30px -18px rgba(0, 0, 0, .8);
 }
+.atouts li::before {
+  content: counter(etape, upper-roman); display: block; margin-bottom: 8px;
+  font: 700 .8125rem/1 var(--titre); letter-spacing: .18em; color: var(--minium-clair);
+}
 .atouts h3 {
-  font-size: 1.125rem; line-height: 1.35; letter-spacing: .07em; text-transform: uppercase;
+  font-size: 1.0625rem; line-height: 1.35; letter-spacing: .06em; text-transform: uppercase; text-wrap: balance;
   color: var(--pierre); text-shadow: var(--taille-claire);
 }
 .atouts h3::after {
   /* un court sillon sous le titre */
-  content: ""; display: block; width: 46px; height: 2px; margin: 14px 0; background: var(--sillon-nuit);
+  content: ""; display: block; width: 40px; height: 2px; margin: 12px 0; background: var(--sillon-nuit);
 }
 .atouts p { margin: 0; color: var(--texte-carte); line-height: 1.6; }
 
-/* ---------- Galerie : les écrans du jeu, dans un cadre sombre et net ---------- */
+/* ---------- Galerie : les écrans du jeu en carrousel, dans un cadre sombre et net ---------- */
+.carrousel { position: relative; }
 .piste {
   display: flex; gap: 18px; list-style: none; padding: 6px var(--marge) 22px; margin: 0 calc(-1 * var(--marge));
   overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: var(--filet) transparent;
 }
-.piste > :first-child { margin-left: auto; }
-.piste > :last-child { margin-right: auto; }
-.piste > li { flex: 0 0 min(62vw, 240px); scroll-snap-align: center; }
+.piste > li { flex: 0 0 min(58vw, 220px); scroll-snap-align: center; }
 .piste figure { margin: 0; }
 .piste .cadre {
-  position: relative; aspect-ratio: 1080 / 2138; border-radius: 16px; padding: 6px;
+  position: relative; aspect-ratio: 1080 / 2138; max-width: 100%; border-radius: 16px; padding: 6px;
   background: #1B1513; border: 1px solid var(--filet);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 16px 32px -14px rgba(0, 0, 0, .85);
 }
@@ -270,9 +275,28 @@ main {
   font: 700 .8125rem/1.3 var(--titre); letter-spacing: .16em; text-transform: uppercase;
   color: var(--sourdine); text-shadow: 0 -1px 0 #000; text-align: center; margin-top: 14px;
 }
-/* Une capture absente retire son cadre ; sans aucune capture, la galerie s'efface. */
-.piste li[hidden] { display: none; }
-.galerie:not(:has(.piste li:not([hidden]))) { display: none; }
+.piste figcaption::before { content: counter(capture, upper-roman) "\00a0·\00a0"; color: var(--minium-clair); }
+.piste { counter-reset: capture; }
+.piste > li { counter-increment: capture; }
+/* l'écran titre ouvre la piste sans numéro : I reste le Ludus, comme dans les tuiles */
+.piste > li.ouverture { counter-increment: none; }
+.piste > li.ouverture figcaption::before { content: none; }
+/* Les flèches : deux jetons de pierre de part et d'autre de la piste, jamais sur les écrans ; pour la souris
+   seulement (au doigt, on glisse). Au bout de la piste, la flèche de ce côté s'estompe. */
+.defile {
+  width: 44px; height: 44px; border-radius: 50%; display: none; place-items: center; cursor: pointer;
+  margin-bottom: 36px;   /* centrée sur l'écran, pas sur l'écran et sa légende */
+  font: 700 1.75rem/1 var(--titre); color: var(--pierre); text-shadow: var(--taille-claire);
+  background: linear-gradient(180deg, #221B18, #1B1513); border: 1px solid var(--filet);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 8px 18px -8px rgba(0, 0, 0, .9);
+}
+.defile:hover { color: var(--or); }
+.defile:disabled { opacity: .3; cursor: default; color: var(--pierre); }
+@media (hover: hover) and (pointer: fine) {
+  .carrousel { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; gap: 14px; align-items: center; }
+  .carrousel .piste { margin: 0; padding-inline: 0; }
+  .defile { display: grid; }
+}
 .section.galerie { padding-bottom: 24px; }
 
 /* ---------- Devenir testeur : la plaque de porphyre impérial, la seule pierre précieuse de la page ---------- */
@@ -294,10 +318,6 @@ main {
 .testeur .filet-orne span { filter: brightness(1.25) drop-shadow(0 -1px 0 rgba(0, 0, 0, .6)); }
 .testeur p { margin: 0 0 14px; color: var(--texte-plaque); }
 .testeur .bouton { margin-top: 16px; }
-.testeur .adresse {
-  margin: 24px 0 0; overflow-wrap: anywhere;
-  font: 600 .9375rem/1.4 var(--titre); letter-spacing: .06em; color: #E8CFC6; text-shadow: 0 -1px 0 rgba(0, 0, 0, .6);
-}
 /* Le bouton de la plaque : la pierre claire, la lettre taillée sombre ; le minium au survol. */
 .testeur .bouton {
   color: var(--sillon-profond); background: linear-gradient(#F7F5F0, #E4E0D7);
@@ -363,16 +383,12 @@ main {
 
 @media (min-width: 640px) {
   :root { --marge: 32px; }
-  .atouts { grid-template-columns: 1fr 1fr; gap: 22px; }
-  /* titre et texte alignes d'une carte a l'autre dans la rangee, quel que soit le nombre de lignes du titre */
-  .atouts li { grid-row: span 2; display: grid; grid-template-rows: subgrid; row-gap: 0; align-content: start; }
+  .atouts { grid-template-columns: 1fr 1fr; }
+  /* numéro, titre et texte alignés d'une carte à l'autre dans la rangée, quel que soit le nombre de lignes du titre */
+  .atouts li { grid-row: span 3; display: grid; grid-template-rows: subgrid; row-gap: 0; align-content: start; }
 }
 @media (min-width: 980px) {
-  .atouts { grid-template-columns: repeat(3, 1fr); }
-  /* onze captures : sur PC la piste se replie en rangees centrees au lieu de defiler */
-  .piste { flex-wrap: wrap; justify-content: center; overflow: visible; row-gap: 28px; }
-  .piste > :first-child, .piste > :last-child { margin: 0; }
-  .piste > li { flex: 0 0 200px; }
+  .atouts { grid-template-columns: repeat(3, 1fr); gap: 20px; }
   .section.galerie { max-width: 1480px; }   /* la galerie vend le jeu : plus large que le texte */
   .section { padding-top: 96px; padding-bottom: 96px; }
 }
