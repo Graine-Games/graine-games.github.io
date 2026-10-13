@@ -318,6 +318,13 @@ main {
 .testeur .filet-orne span { filter: brightness(1.25) drop-shadow(0 -1px 0 rgba(0, 0, 0, .6)); }
 .testeur p { margin: 0 0 14px; color: var(--texte-plaque); }
 .testeur .bouton { margin-top: 16px; }
+/* l'adresse du studio, sous le bouton : gravée claire, le lien sans soulignement criard */
+.testeur .adresse {
+  margin: 24px 0 0; overflow-wrap: anywhere;
+  font: 600 .9375rem/1.4 var(--titre); letter-spacing: .06em; color: #E8CFC6; text-shadow: 0 -1px 0 rgba(0, 0, 0, .6);
+}
+.testeur .adresse a { color: inherit; text-decoration-color: rgba(232, 207, 198, .4); }
+.testeur .adresse a:hover { color: var(--pierre); }
 /* Le bouton de la plaque : la pierre claire, la lettre taillée sombre ; le minium au survol. */
 .testeur .bouton {
   color: var(--sillon-profond); background: linear-gradient(#F7F5F0, #E4E0D7);
